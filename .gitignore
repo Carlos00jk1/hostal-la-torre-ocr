@@ -9,3 +9,5 @@ uploads/
 .pytest_cache/
 .vscode/
 .idea/
+frontend/*.log
+*.log
