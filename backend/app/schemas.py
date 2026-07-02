@@ -103,3 +103,52 @@ class PurchaseRead(PurchaseBase):
     details: list[PurchaseDetailRead]
 
     model_config = {"from_attributes": True}
+
+
+class SaleDetailBase(BaseModel):
+    product_service_id: int | None = None
+    description: str | None = None
+    quantity: Decimal
+    unit_price: Decimal
+
+
+class SaleDetailCreate(SaleDetailBase):
+    pass
+
+
+class SaleDetailRead(SaleDetailBase):
+    id: int
+    subtotal: Decimal
+
+    model_config = {"from_attributes": True}
+
+
+class SaleBase(BaseModel):
+    customer_name: str
+    sale_date: datetime
+    payment_method: str
+    notes: str | None = None
+
+
+class SaleCreate(SaleBase):
+    details: list[SaleDetailCreate]
+
+
+class SaleUpdate(BaseModel):
+    customer_name: str | None = None
+    sale_date: datetime | None = None
+    payment_method: str | None = None
+    notes: str | None = None
+    status: str | None = None
+    details: list[SaleDetailCreate] | None = None
+
+
+class SaleRead(SaleBase):
+    id: int
+    total_amount: Decimal
+    status: str
+    created_at: datetime
+    updated_at: datetime
+    details: list[SaleDetailRead]
+
+    model_config = {"from_attributes": True}

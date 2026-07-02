@@ -125,4 +125,28 @@ export function cancelPurchase(purchaseId) {
   });
 }
 
+export function getSales() {
+  return request("/sales");
+}
+
+export function createSale(sale) {
+  return request("/sales", {
+    method: "POST",
+    body: JSON.stringify(sale),
+  });
+}
+
+export function updateSale(saleId, sale) {
+  return request(`/sales/${saleId}`, {
+    method: "PUT",
+    body: JSON.stringify(sale),
+  });
+}
+
+export function cancelSale(saleId) {
+  return request(`/sales/${saleId}`, {
+    method: "DELETE",
+  });
+}
+
 export { API_URL, TOKEN_KEY };

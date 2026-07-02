@@ -41,6 +41,8 @@ class ProductService(Base):
         DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False
     )
 
+    sale_details = relationship("SaleDetail", back_populates="product_service")
+
 
 class Purchase(Base):
     __tablename__ = "purchases"
@@ -74,3 +76,40 @@ class PurchaseDetail(Base):
     subtotal = Column(Numeric(10, 2), nullable=False)
 
     purchase = relationship("Purchase", back_populates="details")
+
+
+class Sale(Base):
+    __tablename__ = "sales"
+
+    id = Column(Integer, primary_key=True, index=True)
+    customer_name = Column(String(120), nullable=False, index=True)
+    sale_date = Column(DateTime, nullable=False)
+    payment_method = Column(String(60), nullable=False)
+    total_amount = Column(Numeric(10, 2), default=0, nullable=False)
+    notes = Column(Text, nullable=True)
+    status = Column(String(30), default="vigente", nullable=False, index=True)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = Column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False
+    )
+
+    details = relationship(
+        "SaleDetail",
+        back_populates="sale",
+        cascade="all, delete-orphan",
+    )
+
+
+class SaleDetail(Base):
+    __tablename__ = "sale_details"
+
+    id = Column(Integer, primary_key=True, index=True)
+    sale_id = Column(Integer, ForeignKey("sales.id"), nullable=False)
+    product_service_id = Column(Integer, ForeignKey("product_services.id"), nullable=True)
+    description = Column(String(160), nullable=False)
+    quantity = Column(Numeric(10, 2), nullable=False)
+    unit_price = Column(Numeric(10, 2), nullable=False)
+    subtotal = Column(Numeric(10, 2), nullable=False)
+
+    sale = relationship("Sale", back_populates="details")
+    product_service = relationship("ProductService", back_populates="sale_details")
