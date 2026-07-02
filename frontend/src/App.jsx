@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { Link, Route, Routes } from "react-router-dom";
+import { Link, Route, Routes, useLocation } from "react-router-dom";
 
 import { clearToken, getCurrentUser, getToken } from "./api/api.js";
+import AdminLayout from "./components/AdminLayout.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Guests from "./pages/Guests.jsx";
@@ -9,6 +10,7 @@ import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import OCRRegister from "./pages/OCRRegister.jsx";
 import Purchases from "./pages/Purchases.jsx";
+import Reports from "./pages/Reports.jsx";
 import Sales from "./pages/Sales.jsx";
 import Services from "./pages/Services.jsx";
 import Users from "./pages/Users.jsx";
@@ -16,18 +18,22 @@ import Users from "./pages/Users.jsx";
 const links = [
   { to: "/", label: "Inicio" },
   { to: "/login", label: "Login" },
-  { to: "/dashboard", label: "Dashboard" },
-  { to: "/users", label: "Usuarios" },
-  { to: "/guests", label: "Huespedes" },
-  { to: "/ocr", label: "OCR" },
-  { to: "/services", label: "Servicios" },
-  { to: "/purchases", label: "Compras" },
-  { to: "/sales", label: "Ventas" },
 ];
 
 function App() {
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
+  const location = useLocation();
+  const isAdminRoute = [
+    "/dashboard",
+    "/users",
+    "/guests",
+    "/ocr-register",
+    "/services",
+    "/purchases",
+    "/sales",
+    "/reports",
+  ].includes(location.pathname);
 
   useEffect(() => {
     const token = getToken();
@@ -50,41 +56,50 @@ function App() {
     setUser(null);
   }
 
+  function renderAdminPage(page) {
+    return (
+      <ProtectedRoute loading={authLoading} user={user}>
+        <AdminLayout onLogout={handleLogout} user={user}>
+          {page}
+        </AdminLayout>
+      </ProtectedRoute>
+    );
+  }
+
   return (
     <div className="min-vh-100 bg-light">
-      <nav className="navbar navbar-expand-lg bg-white border-bottom">
-        <div className="container">
-          <Link className="navbar-brand fw-semibold" to="/">
-            Hostal La Torre OCR
-          </Link>
-          <div className="navbar-nav flex-row flex-wrap gap-2">
-            {links.map((link) => (
-              <Link className="nav-link px-2" key={link.to} to={link.to}>
-                {link.label}
-              </Link>
-            ))}
+      {!isAdminRoute ? (
+        <nav className="navbar navbar-expand-lg bg-white border-bottom">
+          <div className="container">
+            <Link className="navbar-brand fw-semibold" to="/">
+              Hostal La Torre OCR
+            </Link>
+            <div className="navbar-nav flex-row flex-wrap gap-2">
+              {links.map((link) => (
+                <Link className="nav-link px-2" key={link.to} to={link.to}>
+                  {link.label}
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
-      </nav>
+        </nav>
+      ) : null}
 
-      <main className="container py-4">
+      <main className={isAdminRoute ? "" : "container py-4"}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login onLogin={setUser} />} />
           <Route
             path="/dashboard"
-            element={
-              <ProtectedRoute loading={authLoading} user={user}>
-                <Dashboard onLogout={handleLogout} user={user} />
-              </ProtectedRoute>
-            }
+            element={renderAdminPage(<Dashboard user={user} />)}
           />
-          <Route path="/users" element={<Users />} />
-          <Route path="/guests" element={<Guests />} />
-          <Route path="/ocr" element={<OCRRegister />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/purchases" element={<Purchases />} />
-          <Route path="/sales" element={<Sales />} />
+          <Route path="/users" element={renderAdminPage(<Users />)} />
+          <Route path="/guests" element={renderAdminPage(<Guests />)} />
+          <Route path="/ocr-register" element={renderAdminPage(<OCRRegister />)} />
+          <Route path="/services" element={renderAdminPage(<Services />)} />
+          <Route path="/purchases" element={renderAdminPage(<Purchases />)} />
+          <Route path="/sales" element={renderAdminPage(<Sales />)} />
+          <Route path="/reports" element={renderAdminPage(<Reports />)} />
         </Routes>
       </main>
     </div>

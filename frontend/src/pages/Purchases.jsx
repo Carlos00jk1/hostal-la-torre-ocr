@@ -1,9 +1,11 @@
+import PlaceholderPage from "../components/PlaceholderPage.jsx";
+
 function Purchases() {
   return (
-    <section>
-      <h1 className="h3">Compras</h1>
-      <p className="text-secondary">Gestion de compras pendiente.</p>
-    </section>
+    <PlaceholderPage
+      description="Control administrativo de compras de insumos del hostal."
+      title="Compras de insumos"
+    />
   );
 }
 

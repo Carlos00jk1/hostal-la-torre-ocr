@@ -1,9 +1,11 @@
+import PlaceholderPage from "../components/PlaceholderPage.jsx";
+
 function OCRRegister() {
   return (
-    <section>
-      <h1 className="h3">Registro OCR</h1>
-      <p className="text-secondary">Captura OCR pendiente.</p>
-    </section>
+    <PlaceholderPage
+      description="Registro asistido por OCR para automatizar la captura de datos."
+      title="Registro OCR"
+    />
   );
 }
 

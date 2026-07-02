@@ -1,9 +1,11 @@
+import PlaceholderPage from "../components/PlaceholderPage.jsx";
+
 function Guests() {
   return (
-    <section>
-      <h1 className="h3">Huespedes</h1>
-      <p className="text-secondary">Registro de huespedes pendiente.</p>
-    </section>
+    <PlaceholderPage
+      description="Registro, consulta y administracion de huéspedes."
+      title="Huéspedes"
+    />
   );
 }
 

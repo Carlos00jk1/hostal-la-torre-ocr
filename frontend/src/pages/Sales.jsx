@@ -1,9 +1,11 @@
+import PlaceholderPage from "../components/PlaceholderPage.jsx";
+
 function Sales() {
   return (
-    <section>
-      <h1 className="h3">Ventas</h1>
-      <p className="text-secondary">Gestion de ventas pendiente.</p>
-    </section>
+    <PlaceholderPage
+      description="Registro de ventas de hospedaje y servicios complementarios."
+      title="Ventas de hospedaje/servicios"
+    />
   );
 }
 

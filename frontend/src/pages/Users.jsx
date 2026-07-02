@@ -1,9 +1,11 @@
+import PlaceholderPage from "../components/PlaceholderPage.jsx";
+
 function Users() {
   return (
-    <section>
-      <h1 className="h3">Usuarios</h1>
-      <p className="text-secondary">Gestion de usuarios pendiente.</p>
-    </section>
+    <PlaceholderPage
+      description="Administracion de usuarios, roles y permisos de acceso."
+      title="Usuarios y roles"
+    />
   );
 }
 

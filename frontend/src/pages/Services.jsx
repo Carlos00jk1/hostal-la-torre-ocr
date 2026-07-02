@@ -1,9 +1,11 @@
+import PlaceholderPage from "../components/PlaceholderPage.jsx";
+
 function Services() {
   return (
-    <section>
-      <h1 className="h3">Servicios</h1>
-      <p className="text-secondary">Gestion de servicios pendiente.</p>
-    </section>
+    <PlaceholderPage
+      description="Administracion de servicios ofrecidos a los huespedes."
+      title="Servicios del hostal"
+    />
   );
 }
 
