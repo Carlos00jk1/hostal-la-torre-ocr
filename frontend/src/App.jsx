@@ -1,5 +1,8 @@
+import { useEffect, useState } from "react";
 import { Link, Route, Routes } from "react-router-dom";
 
+import { clearToken, getCurrentUser, getToken } from "./api/api.js";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Guests from "./pages/Guests.jsx";
 import Home from "./pages/Home.jsx";
@@ -23,6 +26,30 @@ const links = [
 ];
 
 function App() {
+  const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
+
+  useEffect(() => {
+    const token = getToken();
+    if (!token) {
+      setAuthLoading(false);
+      return;
+    }
+
+    getCurrentUser(token)
+      .then(setUser)
+      .catch(() => {
+        clearToken();
+        setUser(null);
+      })
+      .finally(() => setAuthLoading(false));
+  }, []);
+
+  function handleLogout() {
+    clearToken();
+    setUser(null);
+  }
+
   return (
     <div className="min-vh-100 bg-light">
       <nav className="navbar navbar-expand-lg bg-white border-bottom">
@@ -43,8 +70,15 @@ function App() {
       <main className="container py-4">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/login" element={<Login onLogin={setUser} />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute loading={authLoading} user={user}>
+                <Dashboard onLogout={handleLogout} user={user} />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/users" element={<Users />} />
           <Route path="/guests" element={<Guests />} />
           <Route path="/ocr" element={<OCRRegister />} />
