@@ -94,8 +94,11 @@ function App() {
             element={renderAdminPage(<Dashboard user={user} />)}
           />
           <Route path="/users" element={renderAdminPage(<Users />)} />
-          <Route path="/guests" element={renderAdminPage(<Guests />)} />
-          <Route path="/ocr-register" element={renderAdminPage(<OCRRegister />)} />
+          <Route path="/guests" element={renderAdminPage(<Guests user={user} />)} />
+          <Route
+            path="/ocr-register"
+            element={renderAdminPage(<OCRRegister user={user} />)}
+          />
           <Route path="/services" element={renderAdminPage(<Services user={user} />)} />
           <Route path="/purchases" element={renderAdminPage(<Purchases user={user} />)} />
           <Route path="/sales" element={renderAdminPage(<Sales user={user} />)} />

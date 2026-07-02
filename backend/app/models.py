@@ -26,6 +26,42 @@ class User(Base):
     role = relationship("Role", back_populates="users")
 
 
+class Guest(Base):
+    __tablename__ = "guests"
+
+    id = Column(Integer, primary_key=True, index=True)
+    full_name = Column(String(160), nullable=False, index=True)
+    document_number = Column(String(60), nullable=False, index=True)
+    document_type = Column(String(60), nullable=False)
+    phone = Column(String(40), nullable=True)
+    email = Column(String(120), nullable=True)
+    nationality = Column(String(80), nullable=True)
+    address = Column(Text, nullable=True)
+    birth_date = Column(DateTime, nullable=True)
+    notes = Column(Text, nullable=True)
+    is_active = Column(Boolean, default=True, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = Column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False
+    )
+
+    ocr_documents = relationship("OCRDocument", back_populates="guest")
+
+
+class OCRDocument(Base):
+    __tablename__ = "ocr_documents"
+
+    id = Column(Integer, primary_key=True, index=True)
+    guest_id = Column(Integer, ForeignKey("guests.id"), nullable=True)
+    filename = Column(String(255), nullable=False)
+    extracted_text = Column(Text, nullable=False)
+    detected_full_name = Column(String(160), nullable=True)
+    detected_document_number = Column(String(60), nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+    guest = relationship("Guest", back_populates="ocr_documents")
+
+
 class ProductService(Base):
     __tablename__ = "product_services"
 

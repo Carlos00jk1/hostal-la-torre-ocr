@@ -149,4 +149,55 @@ export function cancelSale(saleId) {
   });
 }
 
+export function getGuests() {
+  return request("/guests");
+}
+
+export function createGuest(guest) {
+  return request("/guests", {
+    method: "POST",
+    body: JSON.stringify(guest),
+  });
+}
+
+export function updateGuest(guestId, guest) {
+  return request(`/guests/${guestId}`, {
+    method: "PUT",
+    body: JSON.stringify(guest),
+  });
+}
+
+export function deactivateGuest(guestId) {
+  return request(`/guests/${guestId}`, {
+    method: "DELETE",
+  });
+}
+
+export async function extractOCR(file) {
+  const token = getToken();
+  const body = new FormData();
+  body.append("file", file);
+
+  const response = await fetch(`${API_URL}/ocr/extract`, {
+    method: "POST",
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body,
+  });
+
+  if (!response.ok) {
+    let message = "Error al procesar OCR";
+    try {
+      const error = await response.json();
+      message = error.detail ?? message;
+    } catch {
+      message = response.statusText || message;
+    }
+    throw new Error(message);
+  }
+
+  return response.json();
+}
+
 export { API_URL, TOKEN_KEY };

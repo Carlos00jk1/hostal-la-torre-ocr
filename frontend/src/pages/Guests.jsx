@@ -1,11 +1,398 @@
-import PlaceholderPage from "../components/PlaceholderPage.jsx";
+import { useEffect, useState } from "react";
 
-function Guests() {
+import {
+  createGuest,
+  deactivateGuest,
+  getGuests,
+  updateGuest,
+} from "../api/api.js";
+
+const emptyForm = {
+  full_name: "",
+  document_number: "",
+  document_type: "CI",
+  phone: "",
+  email: "",
+  nationality: "",
+  address: "",
+  birth_date: "",
+  notes: "",
+};
+
+function toInputDate(value) {
+  return value ? value.slice(0, 10) : "";
+}
+
+function normalizePayload(form) {
+  return {
+    full_name: form.full_name,
+    document_number: form.document_number,
+    document_type: form.document_type,
+    phone: form.phone || null,
+    email: form.email || null,
+    nationality: form.nationality || null,
+    address: form.address || null,
+    birth_date: form.birth_date ? `${form.birth_date}T00:00:00` : null,
+    notes: form.notes || null,
+    is_active: true,
+  };
+}
+
+function Guests({ user }) {
+  const [guests, setGuests] = useState([]);
+  const [form, setForm] = useState(emptyForm);
+  const [editingId, setEditingId] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  const roleName = user?.role?.name;
+  const isAdmin = roleName === "Administrador";
+  const canWrite = isAdmin || roleName === "Recepcionista";
+
+  async function loadGuests() {
+    setLoading(true);
+    setError("");
+    try {
+      const data = await getGuests();
+      setGuests(Array.isArray(data) ? data : []);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    loadGuests();
+  }, []);
+
+  function handleFieldChange(event) {
+    const { name, value } = event.target;
+    setForm((current) => ({ ...current, [name]: value }));
+  }
+
+  function resetForm() {
+    setForm(emptyForm);
+    setEditingId(null);
+  }
+
+  function startEdit(guest) {
+    setEditingId(guest.id);
+    setForm({
+      full_name: guest.full_name,
+      document_number: guest.document_number,
+      document_type: guest.document_type,
+      phone: guest.phone ?? "",
+      email: guest.email ?? "",
+      nationality: guest.nationality ?? "",
+      address: guest.address ?? "",
+      birth_date: toInputDate(guest.birth_date),
+      notes: guest.notes ?? "",
+    });
+    setMessage("");
+    setError("");
+  }
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    setSaving(true);
+    setMessage("");
+    setError("");
+
+    try {
+      if (editingId) {
+        await updateGuest(editingId, normalizePayload(form));
+        setMessage("Huesped actualizado correctamente.");
+      } else {
+        await createGuest(normalizePayload(form));
+        setMessage("Huesped registrado correctamente.");
+      }
+      resetForm();
+      await loadGuests();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleDeactivate(guestId) {
+    setMessage("");
+    setError("");
+    try {
+      await deactivateGuest(guestId);
+      setMessage("Huesped desactivado correctamente.");
+      await loadGuests();
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
   return (
-    <PlaceholderPage
-      description="Registro, consulta y administracion de huéspedes."
-      title="Huéspedes"
-    />
+    <section>
+      <div className="d-flex flex-column flex-lg-row gap-3 justify-content-between align-items-lg-center mb-4">
+        <div>
+          <h2 className="h4 mb-1">Huespedes</h2>
+          <p className="text-secondary mb-0">
+            Administra los datos de identificacion y contacto de los huespedes.
+          </p>
+        </div>
+        <span className="badge text-bg-primary align-self-start">
+          {guests.length} huespedes
+        </span>
+      </div>
+
+      {message ? <div className="alert alert-success">{message}</div> : null}
+      {error ? <div className="alert alert-danger">{error}</div> : null}
+
+      <div className="row g-4">
+        {canWrite ? (
+          <div className="col-xl-5">
+            <form className="bg-white border rounded-2 p-4" onSubmit={handleSubmit}>
+              <h3 className="h5 mb-3">
+                {editingId ? "Editar huesped" : "Nuevo huesped"}
+              </h3>
+
+              <div className="mb-3">
+                <label className="form-label" htmlFor="full_name">
+                  Nombre completo
+                </label>
+                <input
+                  className="form-control"
+                  id="full_name"
+                  name="full_name"
+                  onChange={handleFieldChange}
+                  required
+                  type="text"
+                  value={form.full_name}
+                />
+              </div>
+
+              <div className="row">
+                <div className="col-md-5 mb-3">
+                  <label className="form-label" htmlFor="document_type">
+                    Tipo documento
+                  </label>
+                  <select
+                    className="form-select"
+                    id="document_type"
+                    name="document_type"
+                    onChange={handleFieldChange}
+                    value={form.document_type}
+                  >
+                    <option value="CI">CI</option>
+                    <option value="Pasaporte">Pasaporte</option>
+                    <option value="DNI">DNI</option>
+                    <option value="Otro">Otro</option>
+                  </select>
+                </div>
+                <div className="col-md-7 mb-3">
+                  <label className="form-label" htmlFor="document_number">
+                    Numero documento
+                  </label>
+                  <input
+                    className="form-control"
+                    id="document_number"
+                    name="document_number"
+                    onChange={handleFieldChange}
+                    required
+                    type="text"
+                    value={form.document_number}
+                  />
+                </div>
+              </div>
+
+              <div className="row">
+                <div className="col-md-6 mb-3">
+                  <label className="form-label" htmlFor="phone">
+                    Telefono
+                  </label>
+                  <input
+                    className="form-control"
+                    id="phone"
+                    name="phone"
+                    onChange={handleFieldChange}
+                    type="text"
+                    value={form.phone}
+                  />
+                </div>
+                <div className="col-md-6 mb-3">
+                  <label className="form-label" htmlFor="birth_date">
+                    Fecha nacimiento
+                  </label>
+                  <input
+                    className="form-control"
+                    id="birth_date"
+                    name="birth_date"
+                    onChange={handleFieldChange}
+                    type="date"
+                    value={form.birth_date}
+                  />
+                </div>
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label" htmlFor="email">
+                  Email
+                </label>
+                <input
+                  className="form-control"
+                  id="email"
+                  name="email"
+                  onChange={handleFieldChange}
+                  type="email"
+                  value={form.email}
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label" htmlFor="nationality">
+                  Nacionalidad
+                </label>
+                <input
+                  className="form-control"
+                  id="nationality"
+                  name="nationality"
+                  onChange={handleFieldChange}
+                  type="text"
+                  value={form.nationality}
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label" htmlFor="address">
+                  Direccion
+                </label>
+                <input
+                  className="form-control"
+                  id="address"
+                  name="address"
+                  onChange={handleFieldChange}
+                  type="text"
+                  value={form.address}
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label" htmlFor="notes">
+                  Notas
+                </label>
+                <textarea
+                  className="form-control"
+                  id="notes"
+                  name="notes"
+                  onChange={handleFieldChange}
+                  rows="2"
+                  value={form.notes}
+                />
+              </div>
+
+              <div className="d-flex gap-2">
+                <button className="btn btn-primary" disabled={saving} type="submit">
+                  {saving ? "Guardando..." : "Guardar huesped"}
+                </button>
+                {editingId ? (
+                  <button className="btn btn-outline-secondary" onClick={resetForm} type="button">
+                    Cancelar
+                  </button>
+                ) : null}
+              </div>
+            </form>
+          </div>
+        ) : null}
+
+        <div className={canWrite ? "col-xl-7" : "col-12"}>
+          <div className="bg-white border rounded-2">
+            <div className="table-responsive">
+              <table className="table align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Documento</th>
+                    <th>Contacto</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {loading ? (
+                    <tr>
+                      <td className="text-secondary" colSpan="5">
+                        Cargando huespedes...
+                      </td>
+                    </tr>
+                  ) : null}
+
+                  {!loading && guests.length === 0 ? (
+                    <tr>
+                      <td className="text-secondary" colSpan="5">
+                        No hay huespedes registrados.
+                      </td>
+                    </tr>
+                  ) : null}
+
+                  {!loading
+                    ? guests.map((guest) => (
+                        <tr key={guest.id}>
+                          <td>
+                            <p className="fw-semibold mb-0">{guest.full_name}</p>
+                            <small className="text-secondary">
+                              {guest.nationality || "Sin nacionalidad"}
+                            </small>
+                          </td>
+                          <td>
+                            {guest.document_type} {guest.document_number}
+                          </td>
+                          <td>
+                            <p className="mb-0">{guest.phone || "Sin telefono"}</p>
+                            <small className="text-secondary">
+                              {guest.email || "Sin email"}
+                            </small>
+                          </td>
+                          <td>
+                            <span
+                              className={`badge ${
+                                guest.is_active ? "text-bg-success" : "text-bg-secondary"
+                              }`}
+                            >
+                              {guest.is_active ? "Activo" : "Inactivo"}
+                            </span>
+                          </td>
+                          <td>
+                            <div className="d-flex flex-wrap gap-2">
+                              {canWrite ? (
+                                <button
+                                  className="btn btn-sm btn-outline-primary"
+                                  onClick={() => startEdit(guest)}
+                                  type="button"
+                                >
+                                  Editar
+                                </button>
+                              ) : null}
+                              {isAdmin ? (
+                                <button
+                                  className="btn btn-sm btn-outline-danger"
+                                  disabled={!guest.is_active}
+                                  onClick={() => handleDeactivate(guest.id)}
+                                  type="button"
+                                >
+                                  Desactivar
+                                </button>
+                              ) : null}
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    : null}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 

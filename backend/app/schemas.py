@@ -29,6 +29,51 @@ class UserRead(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class GuestBase(BaseModel):
+    full_name: str
+    document_number: str
+    document_type: str
+    phone: str | None = None
+    email: str | None = None
+    nationality: str | None = None
+    address: str | None = None
+    birth_date: datetime | None = None
+    notes: str | None = None
+    is_active: bool = True
+
+
+class GuestCreate(GuestBase):
+    pass
+
+
+class GuestUpdate(BaseModel):
+    full_name: str | None = None
+    document_number: str | None = None
+    document_type: str | None = None
+    phone: str | None = None
+    email: str | None = None
+    nationality: str | None = None
+    address: str | None = None
+    birth_date: datetime | None = None
+    notes: str | None = None
+    is_active: bool | None = None
+
+
+class GuestRead(GuestBase):
+    id: int
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
+class OCRExtractResponse(BaseModel):
+    filename: str
+    extracted_text: str
+    detected_full_name: str | None = None
+    detected_document_number: str | None = None
+
+
 class ProductServiceBase(BaseModel):
     name: str
     description: str | None = None
