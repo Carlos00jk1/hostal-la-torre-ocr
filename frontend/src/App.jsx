@@ -67,16 +67,17 @@ function App() {
   }
 
   return (
-    <div className="min-vh-100 bg-light">
+    <div className="app-shell min-vh-100">
       {!isAdminRoute ? (
-        <nav className="navbar navbar-expand-lg bg-white border-bottom">
+        <nav className="navbar navbar-expand-lg public-navbar sticky-top">
           <div className="container">
-            <Link className="navbar-brand fw-semibold" to="/">
-              Hostal La Torre OCR
+            <Link className="navbar-brand fw-semibold d-flex align-items-center gap-2" to="/">
+              <span className="brand-mark">LT</span>
+              <span>Hostal La Torre</span>
             </Link>
             <div className="navbar-nav flex-row flex-wrap gap-2">
               {links.map((link) => (
-                <Link className="nav-link px-2" key={link.to} to={link.to}>
+                <Link className="nav-link px-3 fw-medium" key={link.to} to={link.to}>
                   {link.label}
                 </Link>
               ))}

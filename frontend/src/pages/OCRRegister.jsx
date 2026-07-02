@@ -205,7 +205,7 @@ function OCRRegister({ user }) {
   }
 
   return (
-    <section>
+    <section className="ocr-workspace">
       <div className="d-flex flex-column flex-lg-row gap-3 justify-content-between align-items-lg-center mb-4">
         <div>
           <h2 className="h4 mb-1">Registro OCR</h2>
@@ -259,7 +259,7 @@ function OCRRegister({ user }) {
               <div className="row g-3 mb-3">
                 {selectedImages.map((image) => (
                   <div className="col-md-6" key={image.id}>
-                    <div className="border rounded-2 p-2 bg-light h-100">
+                    <div className="preview-card border rounded-2 p-2 bg-light h-100">
                       <img
                         alt={`Vista previa de ${image.file.name}`}
                         className="img-fluid rounded-2 mb-2"

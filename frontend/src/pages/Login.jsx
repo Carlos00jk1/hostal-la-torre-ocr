@@ -29,11 +29,15 @@ function Login({ onLogin }) {
   }
 
   return (
-    <section>
-      <h1 className="h3">Login</h1>
-      <p className="text-secondary">Acceso para usuarios registrados.</p>
+    <section className="login-page">
+      <form className="login-card" onSubmit={handleSubmit}>
+        <div className="text-center mb-4">
+          <span className="brand-mark mx-auto mb-3">LT</span>
+          <p className="section-eyebrow mb-2">Acceso administrativo</p>
+          <h1 className="h3 mb-1">Hostal La Torre</h1>
+          <p className="text-secondary mb-0">Sistema de gestión web con OCR</p>
+        </div>
 
-      <form className="mt-3" onSubmit={handleSubmit}>
         <div className="mb-3">
           <label className="form-label" htmlFor="username">
             Usuario
@@ -62,7 +66,7 @@ function Login({ onLogin }) {
 
         {error ? <div className="alert alert-danger">{error}</div> : null}
 
-        <button className="btn btn-primary" disabled={loading} type="submit">
+        <button className="btn btn-primary w-100" disabled={loading} type="submit">
           {loading ? "Ingresando..." : "Ingresar"}
         </button>
       </form>

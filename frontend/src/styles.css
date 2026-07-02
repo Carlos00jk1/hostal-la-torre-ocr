@@ -1,0 +1,256 @@
+:root {
+  --tower-navy: #10243f;
+  --tower-navy-2: #18365c;
+  --tower-gold: #c9a45c;
+  --tower-gold-soft: #f4ead4;
+  --tower-ink: #172033;
+  --tower-muted: #657083;
+  --tower-bg: #f4f6f9;
+  --tower-border: #dfe5ee;
+  --tower-card-shadow: 0 18px 45px rgba(16, 36, 63, 0.08);
+}
+
+body {
+  background: var(--tower-bg);
+  color: var(--tower-ink);
+}
+
+.app-shell {
+  background:
+    linear-gradient(180deg, rgba(16, 36, 63, 0.03), rgba(244, 246, 249, 0.2)),
+    var(--tower-bg);
+}
+
+.public-navbar {
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 24px rgba(16, 36, 63, 0.06);
+}
+
+.brand-mark {
+  align-items: center;
+  background: var(--tower-navy);
+  border-radius: 8px;
+  color: var(--tower-gold);
+  display: inline-flex;
+  font-weight: 700;
+  height: 38px;
+  justify-content: center;
+  width: 38px;
+}
+
+.btn-primary {
+  --bs-btn-bg: var(--tower-navy);
+  --bs-btn-border-color: var(--tower-navy);
+  --bs-btn-hover-bg: var(--tower-navy-2);
+  --bs-btn-hover-border-color: var(--tower-navy-2);
+}
+
+.btn-outline-primary {
+  --bs-btn-color: var(--tower-navy);
+  --bs-btn-border-color: var(--tower-navy);
+  --bs-btn-hover-bg: var(--tower-navy);
+  --bs-btn-hover-border-color: var(--tower-navy);
+}
+
+.text-gold {
+  color: var(--tower-gold);
+}
+
+.bg-gold-soft {
+  background: var(--tower-gold-soft);
+}
+
+.section-eyebrow {
+  color: var(--tower-gold);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hotel-hero {
+  background:
+    linear-gradient(105deg, rgba(16, 36, 63, 0.95), rgba(16, 36, 63, 0.78)),
+    url("https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1800&q=80");
+  background-position: center;
+  background-size: cover;
+  border-radius: 0;
+  color: #fff;
+  margin-inline: calc(50% - 50vw);
+  min-height: 520px;
+  padding: 84px max(24px, calc((100vw - 1140px) / 2)) 68px;
+}
+
+.hero-panel {
+  max-width: 720px;
+}
+
+.hero-title {
+  font-size: clamp(2.3rem, 5vw, 4.6rem);
+  font-weight: 750;
+  line-height: 1;
+}
+
+.hero-copy {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 1.08rem;
+  max-width: 620px;
+}
+
+.feature-card,
+.module-card,
+.summary-card,
+.content-card,
+form.bg-white,
+.bg-white.border.rounded-2 {
+  border-color: var(--tower-border) !important;
+  box-shadow: var(--tower-card-shadow);
+}
+
+.feature-card,
+.module-card {
+  background: #fff;
+  border: 1px solid var(--tower-border);
+  border-radius: 8px;
+  height: 100%;
+  padding: 1.35rem;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.feature-card:hover,
+.module-card:hover {
+  box-shadow: 0 22px 55px rgba(16, 36, 63, 0.13);
+  transform: translateY(-2px);
+}
+
+.icon-tile {
+  align-items: center;
+  background: var(--tower-gold-soft);
+  border-radius: 8px;
+  color: var(--tower-navy);
+  display: inline-flex;
+  font-size: 1.25rem;
+  font-weight: 700;
+  height: 44px;
+  justify-content: center;
+  width: 44px;
+}
+
+.login-page {
+  align-items: center;
+  background:
+    linear-gradient(135deg, rgba(16, 36, 63, 0.94), rgba(24, 54, 92, 0.72)),
+    url("https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=1600&q=80");
+  background-position: center;
+  background-size: cover;
+  display: flex;
+  margin: -1.5rem calc(50% - 50vw);
+  min-height: calc(100vh - 72px);
+  padding: 48px 24px;
+}
+
+.login-card {
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-radius: 8px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.25);
+  margin: 0 auto;
+  max-width: 440px;
+  padding: 2rem;
+  width: 100%;
+}
+
+.admin-shell {
+  background: var(--tower-bg);
+}
+
+.admin-sidebar {
+  background: linear-gradient(180deg, var(--tower-navy), #0b1729);
+  color: #fff;
+}
+
+.admin-sidebar .nav-link {
+  color: rgba(255, 255, 255, 0.72);
+  font-weight: 500;
+  padding: 0.78rem 0.9rem;
+}
+
+.admin-sidebar .nav-link.active,
+.admin-sidebar .nav-link:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.admin-header {
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 8px 24px rgba(16, 36, 63, 0.06);
+}
+
+.admin-content {
+  padding: 1.5rem;
+}
+
+.page-title-block {
+  background: linear-gradient(135deg, #fff, #f8fbff);
+  border: 1px solid var(--tower-border);
+  border-radius: 8px;
+  box-shadow: var(--tower-card-shadow);
+}
+
+.table {
+  --bs-table-hover-bg: #f8fafc;
+}
+
+.table thead th {
+  background: #f8fafc;
+  color: #475569;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.form-control,
+.form-select {
+  border-color: #d7dee8;
+  min-height: 42px;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--tower-gold);
+  box-shadow: 0 0 0 0.2rem rgba(201, 164, 92, 0.2);
+}
+
+.badge {
+  border-radius: 999px;
+  font-weight: 600;
+  padding: 0.45em 0.75em;
+}
+
+.ocr-workspace .preview-card img {
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  width: 100%;
+}
+
+.ocr-workspace pre {
+  max-height: 420px;
+  overflow: auto;
+  white-space: pre-wrap;
+}
+
+@media (max-width: 991.98px) {
+  .admin-sidebar {
+    min-height: auto !important;
+  }
+
+  .hotel-hero {
+    min-height: auto;
+    padding-block: 56px;
+  }
+
+  .login-page {
+    min-height: calc(100vh - 64px);
+  }
+}
