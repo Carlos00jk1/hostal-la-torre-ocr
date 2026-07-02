@@ -149,6 +149,34 @@ export function cancelSale(saleId) {
   });
 }
 
+export function getUsers() {
+  return request("/users");
+}
+
+export function createUser(user) {
+  return request("/users", {
+    method: "POST",
+    body: JSON.stringify(user),
+  });
+}
+
+export function updateUser(userId, user) {
+  return request(`/users/${userId}`, {
+    method: "PUT",
+    body: JSON.stringify(user),
+  });
+}
+
+export function deactivateUser(userId) {
+  return request(`/users/${userId}`, {
+    method: "DELETE",
+  });
+}
+
+export function getRoles() {
+  return request("/roles");
+}
+
 export function getGuests() {
   return request("/guests");
 }

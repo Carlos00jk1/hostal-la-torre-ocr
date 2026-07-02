@@ -29,6 +29,20 @@ class UserRead(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class UserCreate(BaseModel):
+    username: str
+    password: str
+    role_id: int
+    is_active: bool = True
+
+
+class UserUpdate(BaseModel):
+    username: str | None = None
+    password: str | None = None
+    role_id: int | None = None
+    is_active: bool | None = None
+
+
 class GuestBase(BaseModel):
     full_name: str
     document_number: str
