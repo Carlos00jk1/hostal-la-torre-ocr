@@ -97,7 +97,7 @@ function App() {
           <Route path="/guests" element={renderAdminPage(<Guests />)} />
           <Route path="/ocr-register" element={renderAdminPage(<OCRRegister />)} />
           <Route path="/services" element={renderAdminPage(<Services user={user} />)} />
-          <Route path="/purchases" element={renderAdminPage(<Purchases />)} />
+          <Route path="/purchases" element={renderAdminPage(<Purchases user={user} />)} />
           <Route path="/sales" element={renderAdminPage(<Sales />)} />
           <Route path="/reports" element={renderAdminPage(<Reports />)} />
         </Routes>

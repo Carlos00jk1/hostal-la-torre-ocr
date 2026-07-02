@@ -101,4 +101,28 @@ export function deactivateService(serviceId) {
   });
 }
 
+export function getPurchases() {
+  return request("/purchases");
+}
+
+export function createPurchase(purchase) {
+  return request("/purchases", {
+    method: "POST",
+    body: JSON.stringify(purchase),
+  });
+}
+
+export function updatePurchase(purchaseId, purchase) {
+  return request(`/purchases/${purchaseId}`, {
+    method: "PUT",
+    body: JSON.stringify(purchase),
+  });
+}
+
+export function cancelPurchase(purchaseId) {
+  return request(`/purchases/${purchaseId}`, {
+    method: "DELETE",
+  });
+}
+
 export { API_URL, TOKEN_KEY };

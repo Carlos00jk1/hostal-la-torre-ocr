@@ -57,3 +57,49 @@ class ProductServiceRead(ProductServiceBase):
     updated_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class PurchaseDetailBase(BaseModel):
+    item_name: str
+    quantity: Decimal
+    unit_price: Decimal
+
+
+class PurchaseDetailCreate(PurchaseDetailBase):
+    pass
+
+
+class PurchaseDetailRead(PurchaseDetailBase):
+    id: int
+    subtotal: Decimal
+
+    model_config = {"from_attributes": True}
+
+
+class PurchaseBase(BaseModel):
+    supplier_name: str
+    purchase_date: datetime
+    notes: str | None = None
+
+
+class PurchaseCreate(PurchaseBase):
+    details: list[PurchaseDetailCreate]
+
+
+class PurchaseUpdate(BaseModel):
+    supplier_name: str | None = None
+    purchase_date: datetime | None = None
+    notes: str | None = None
+    is_cancelled: bool | None = None
+    details: list[PurchaseDetailCreate] | None = None
+
+
+class PurchaseRead(PurchaseBase):
+    id: int
+    total_amount: Decimal
+    is_cancelled: bool
+    created_at: datetime
+    updated_at: datetime
+    details: list[PurchaseDetailRead]
+
+    model_config = {"from_attributes": True}

@@ -40,3 +40,37 @@ class ProductService(Base):
     updated_at = Column(
         DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False
     )
+
+
+class Purchase(Base):
+    __tablename__ = "purchases"
+
+    id = Column(Integer, primary_key=True, index=True)
+    supplier_name = Column(String(120), nullable=False, index=True)
+    purchase_date = Column(DateTime, nullable=False)
+    total_amount = Column(Numeric(10, 2), default=0, nullable=False)
+    notes = Column(Text, nullable=True)
+    is_cancelled = Column(Boolean, default=False, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = Column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False
+    )
+
+    details = relationship(
+        "PurchaseDetail",
+        back_populates="purchase",
+        cascade="all, delete-orphan",
+    )
+
+
+class PurchaseDetail(Base):
+    __tablename__ = "purchase_details"
+
+    id = Column(Integer, primary_key=True, index=True)
+    purchase_id = Column(Integer, ForeignKey("purchases.id"), nullable=False)
+    item_name = Column(String(120), nullable=False)
+    quantity = Column(Numeric(10, 2), nullable=False)
+    unit_price = Column(Numeric(10, 2), nullable=False)
+    subtotal = Column(Numeric(10, 2), nullable=False)
+
+    purchase = relationship("Purchase", back_populates="details")
