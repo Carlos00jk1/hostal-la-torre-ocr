@@ -1,5 +1,7 @@
+from datetime import datetime
+
 from app.database import Base
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, Numeric, String, Text
 from sqlalchemy.orm import relationship
 
 
@@ -22,3 +24,19 @@ class User(Base):
     role_id = Column(Integer, ForeignKey("roles.id"), nullable=False)
 
     role = relationship("Role", back_populates="users")
+
+
+class ProductService(Base):
+    __tablename__ = "product_services"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(120), nullable=False, index=True)
+    description = Column(Text, nullable=True)
+    category = Column(String(80), nullable=False, index=True)
+    price = Column(Numeric(10, 2), nullable=False)
+    stock = Column(Integer, nullable=True)
+    is_active = Column(Boolean, default=True, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = Column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False
+    )

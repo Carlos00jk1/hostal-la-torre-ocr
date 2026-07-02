@@ -52,4 +52,53 @@ export async function getCurrentUser(token = getToken()) {
   return response.json();
 }
 
+async function request(path, options = {}) {
+  const token = getToken();
+  const response = await fetch(`${API_URL}${path}`, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...options.headers,
+    },
+  });
+
+  if (!response.ok) {
+    let message = "Error al procesar la solicitud";
+    try {
+      const error = await response.json();
+      message = error.detail ?? message;
+    } catch {
+      message = response.statusText || message;
+    }
+    throw new Error(message);
+  }
+
+  return response.json();
+}
+
+export function getServices() {
+  return request("/services");
+}
+
+export function createService(service) {
+  return request("/services", {
+    method: "POST",
+    body: JSON.stringify(service),
+  });
+}
+
+export function updateService(serviceId, service) {
+  return request(`/services/${serviceId}`, {
+    method: "PUT",
+    body: JSON.stringify(service),
+  });
+}
+
+export function deactivateService(serviceId) {
+  return request(`/services/${serviceId}`, {
+    method: "DELETE",
+  });
+}
+
 export { API_URL, TOKEN_KEY };
