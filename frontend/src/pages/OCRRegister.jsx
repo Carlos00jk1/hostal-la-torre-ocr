@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import { createGuest, extractOCR } from "../api/api.js";
+import { createGuest, extractOCRMultiple } from "../api/api.js";
 
 const emptyGuestForm = {
   full_name: "",
@@ -29,38 +29,93 @@ function buildGuestPayload(form) {
   };
 }
 
+function calculateAge(birthDate) {
+  if (!birthDate) {
+    return null;
+  }
+
+  const born = new Date(`${birthDate}T00:00:00`);
+  if (Number.isNaN(born.getTime())) {
+    return null;
+  }
+
+  const today = new Date();
+  let age = today.getFullYear() - born.getFullYear();
+  const monthDiff = today.getMonth() - born.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < born.getDate())) {
+    age -= 1;
+  }
+  return age >= 0 ? age : null;
+}
+
+function formatDetectedLabel(fieldName) {
+  const labels = {
+    full_name: "Nombre completo",
+    document_number: "Número documento",
+    document_type: "Tipo documento",
+    birth_date: "Fecha nacimiento",
+    age: "Edad",
+    marital_status: "Estado civil",
+    occupation: "Ocupación",
+    address: "Dirección",
+    nationality: "Nacionalidad",
+  };
+
+  return labels[fieldName] ?? fieldName;
+}
+
 function OCRRegister({ user }) {
-  const [file, setFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState("");
+  const [selectedImages, setSelectedImages] = useState([]);
   const [ocrResult, setOcrResult] = useState(null);
   const [guestForm, setGuestForm] = useState(emptyGuestForm);
   const [extracting, setExtracting] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const selectedImagesRef = useRef([]);
 
   const roleName = user?.role?.name;
   const canWrite = roleName === "Administrador" || roleName === "Recepcionista";
+  const guestAge = calculateAge(guestForm.birth_date);
+
+  useEffect(() => {
+    selectedImagesRef.current = selectedImages;
+  }, [selectedImages]);
 
   useEffect(() => {
     return () => {
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl);
-      }
+      selectedImagesRef.current.forEach((image) =>
+        URL.revokeObjectURL(image.previewUrl),
+      );
     };
-  }, [previewUrl]);
+  }, []);
 
   function handleFileChange(event) {
-    const selectedFile = event.target.files?.[0] ?? null;
-    setFile(selectedFile);
+    const files = Array.from(event.target.files ?? []);
+    const nextImages = files.map((file) => ({
+      id: `${file.name}-${file.lastModified}-${Date.now()}-${Math.random()}`,
+      file,
+      previewUrl: URL.createObjectURL(file),
+    }));
+
+    setSelectedImages((current) => [...current, ...nextImages]);
     setOcrResult(null);
     setMessage("");
     setError("");
+    event.target.value = "";
+  }
 
-    if (previewUrl) {
-      URL.revokeObjectURL(previewUrl);
-    }
-    setPreviewUrl(selectedFile ? URL.createObjectURL(selectedFile) : "");
+  function removeImage(imageId) {
+    setSelectedImages((current) => {
+      const imageToRemove = current.find((image) => image.id === imageId);
+      if (imageToRemove) {
+        URL.revokeObjectURL(imageToRemove.previewUrl);
+      }
+      return current.filter((image) => image.id !== imageId);
+    });
+    setOcrResult(null);
+    setMessage("");
+    setError("");
   }
 
   function handleGuestFieldChange(event) {
@@ -69,8 +124,8 @@ function OCRRegister({ user }) {
   }
 
   async function handleExtract() {
-    if (!file) {
-      setError("Selecciona una imagen antes de extraer datos.");
+    if (selectedImages.length === 0) {
+      setError("Selecciona una o más imágenes antes de extraer datos.");
       return;
     }
 
@@ -79,15 +134,49 @@ function OCRRegister({ user }) {
     setError("");
 
     try {
-      const data = await extractOCR(file);
+      const data = await extractOCRMultiple(selectedImages.map((image) => image.file));
+      const failedFiles = data.files.filter((fileResult) => fileResult.status === "failed");
+      const detectedFields = data.detected_fields ?? {};
       setOcrResult(data);
       setGuestForm((current) => ({
         ...current,
-        full_name: data.detected_full_name || current.full_name,
-        document_number: data.detected_document_number || current.document_number,
-        notes: current.notes || `Registro asistido por OCR: ${data.filename}`,
+        full_name: detectedFields.full_name || current.full_name,
+        document_number: detectedFields.document_number || current.document_number,
+        document_type: detectedFields.document_type || current.document_type,
+        birth_date: detectedFields.birth_date || current.birth_date,
+        nationality: detectedFields.nationality || current.nationality,
+        address: detectedFields.address || current.address,
+        notes:
+          current.notes ||
+          `Registro asistido por OCR: ${data.files
+            .filter((fileResult) => fileResult.status === "success")
+            .map((fileResult) => fileResult.filename)
+            .join(", ")}`,
       }));
-      setMessage("Texto extraido correctamente. Revisa y completa los datos antes de guardar.");
+
+      if (failedFiles.length > 0) {
+        setMessage(
+          `OCR finalizado con advertencias. No se pudo procesar: ${failedFiles
+            .map((fileResult) => fileResult.original_filename)
+            .join(", ")}.`,
+        );
+      } else {
+        const missingImportantFields = [];
+        if (!detectedFields.full_name) {
+          missingImportantFields.push("nombre");
+        }
+        if (!detectedFields.document_number) {
+          missingImportantFields.push("documento");
+        }
+
+        setMessage(
+          missingImportantFields.length > 0
+            ? `Datos sugeridos automáticamente. No se detectó con suficiente claridad: ${missingImportantFields.join(
+                ", ",
+              )}. Complete manualmente.`
+            : "Datos sugeridos automáticamente. Revise y corrija antes de guardar.",
+        );
+      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -103,14 +192,11 @@ function OCRRegister({ user }) {
 
     try {
       await createGuest(buildGuestPayload(guestForm));
+      selectedImages.forEach((image) => URL.revokeObjectURL(image.previewUrl));
       setGuestForm(emptyGuestForm);
       setOcrResult(null);
-      setFile(null);
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl);
-      }
-      setPreviewUrl("");
-      setMessage("Huesped guardado correctamente desde registro OCR.");
+      setSelectedImages([]);
+      setMessage("Huésped guardado correctamente desde registro OCR.");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -124,8 +210,9 @@ function OCRRegister({ user }) {
         <div>
           <h2 className="h4 mb-1">Registro OCR</h2>
           <p className="text-secondary mb-0">
-            Extrae texto desde una imagen de documento y completa manualmente el
-            registro del huesped.
+            Puede cargar una o varias imágenes del documento, por ejemplo anverso
+            y reverso del carnet. El OCR asiste el registro, pero los datos deben
+            revisarse antes de guardar.
           </p>
         </div>
         <span className="badge text-bg-primary align-self-start">
@@ -138,47 +225,69 @@ function OCRRegister({ user }) {
 
       {!canWrite ? (
         <div className="alert alert-warning">
-          Tu rol solo permite consultar informacion. El registro OCR requiere rol
+          Tu rol solo permite consultar información. El registro OCR requiere rol
           Administrador o Recepcionista.
         </div>
       ) : null}
 
+      <div className="alert alert-info">
+        La calidad del OCR depende de la iluminación, enfoque y recorte de la
+        imagen. Revise siempre los datos antes de guardar.
+      </div>
+
       <div className="row g-4">
         <div className="col-xl-5">
           <div className="bg-white border rounded-2 p-4">
-            <h3 className="h5 mb-3">Imagen del documento</h3>
+            <h3 className="h5 mb-3">Paso 1: Cargar imágenes del documento</h3>
 
             <div className="mb-3">
-              <label className="form-label" htmlFor="ocr_file">
-                Archivo de imagen
+              <label className="form-label" htmlFor="ocr_files">
+                Imágenes del documento
               </label>
               <input
                 accept="image/*"
                 className="form-control"
                 disabled={!canWrite}
-                id="ocr_file"
+                id="ocr_files"
+                multiple
                 onChange={handleFileChange}
                 type="file"
               />
             </div>
 
-            {previewUrl ? (
-              <div className="border rounded-2 p-2 mb-3 bg-light">
-                <img
-                  alt="Vista previa del documento"
-                  className="img-fluid rounded-2"
-                  src={previewUrl}
-                />
+            {selectedImages.length > 0 ? (
+              <div className="row g-3 mb-3">
+                {selectedImages.map((image) => (
+                  <div className="col-md-6" key={image.id}>
+                    <div className="border rounded-2 p-2 bg-light h-100">
+                      <img
+                        alt={`Vista previa de ${image.file.name}`}
+                        className="img-fluid rounded-2 mb-2"
+                        src={image.previewUrl}
+                      />
+                      <p className="small text-break mb-2">{image.file.name}</p>
+                      <button
+                        className="btn btn-sm btn-outline-danger"
+                        disabled={!canWrite || extracting}
+                        onClick={() => removeImage(image.id)}
+                        type="button"
+                      >
+                        Quitar
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
             ) : (
               <div className="border rounded-2 p-4 text-center text-secondary mb-3">
-                Sin imagen seleccionada.
+                Sin imágenes seleccionadas.
               </div>
             )}
 
+            <h3 className="h5 mb-3">Paso 2: Extraer texto con OCR</h3>
             <button
               className="btn btn-primary"
-              disabled={!canWrite || !file || extracting}
+              disabled={!canWrite || selectedImages.length === 0 || extracting}
               onClick={handleExtract}
               type="button"
             >
@@ -188,11 +297,8 @@ function OCRRegister({ user }) {
 
           {ocrResult ? (
             <div className="bg-white border rounded-2 p-4 mt-4">
-              <h3 className="h5 mb-3">Texto extraido</h3>
+              <h3 className="h5 mb-3">Texto extraído</h3>
               <div className="mb-3">
-                <p className="mb-1">
-                  <strong>Archivo:</strong> {ocrResult.filename}
-                </p>
                 <p className="mb-1">
                   <strong>Nombre detectado:</strong>{" "}
                   {ocrResult.detected_full_name || "No detectado"}
@@ -202,8 +308,49 @@ function OCRRegister({ user }) {
                   {ocrResult.detected_document_number || "No detectado"}
                 </p>
               </div>
+
+              {ocrResult.detected_fields ? (
+                <div className="mb-3">
+                  <h4 className="h6">Campos detectados</h4>
+                  <div className="table-responsive">
+                    <table className="table table-sm mb-0">
+                      <tbody>
+                        {Object.entries(ocrResult.detected_fields)
+                          .filter(([, value]) => value)
+                          .map(([fieldName, value]) => (
+                            <tr key={fieldName}>
+                              <th className="text-secondary" scope="row">
+                                {formatDetectedLabel(fieldName)}
+                              </th>
+                              <td>{value}</td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              ) : null}
+
+              <div className="mb-3">
+                {ocrResult.files.map((fileResult) => (
+                  <div
+                    className={`alert py-2 mb-2 ${
+                      fileResult.status === "success"
+                        ? "alert-success"
+                        : "alert-warning"
+                    }`}
+                    key={`${fileResult.original_filename}-${fileResult.filename}`}
+                  >
+                    <strong>{fileResult.original_filename}</strong>:{" "}
+                    {fileResult.status === "success"
+                      ? "Procesado correctamente"
+                      : fileResult.error || "No se pudo procesar esta imagen"}
+                  </div>
+                ))}
+              </div>
+
               <pre className="bg-light border rounded-2 p-3 small text-wrap mb-0">
-                {ocrResult.extracted_text || "Sin texto extraido."}
+                {ocrResult.combined_text || "Sin texto extraído."}
               </pre>
             </div>
           ) : null}
@@ -211,7 +358,7 @@ function OCRRegister({ user }) {
 
         <div className="col-xl-7">
           <form className="bg-white border rounded-2 p-4" onSubmit={handleSaveGuest}>
-            <h3 className="h5 mb-3">Datos validados del huesped</h3>
+            <h3 className="h5 mb-3">Paso 3: Revisar/corregir datos detectados</h3>
 
             <div className="mb-3">
               <label className="form-label" htmlFor="full_name">
@@ -250,7 +397,7 @@ function OCRRegister({ user }) {
               </div>
               <div className="col-md-8 mb-3">
                 <label className="form-label" htmlFor="document_number">
-                  Numero documento
+                  Número documento
                 </label>
                 <input
                   className="form-control"
@@ -268,7 +415,7 @@ function OCRRegister({ user }) {
             <div className="row">
               <div className="col-md-6 mb-3">
                 <label className="form-label" htmlFor="phone">
-                  Telefono
+                  Teléfono
                 </label>
                 <input
                   className="form-control"
@@ -293,6 +440,9 @@ function OCRRegister({ user }) {
                   type="date"
                   value={guestForm.birth_date}
                 />
+                <div className="form-text">
+                  {guestAge !== null ? `Edad: ${guestAge} años` : "Edad no calculada"}
+                </div>
               </div>
             </div>
 
@@ -329,7 +479,7 @@ function OCRRegister({ user }) {
 
             <div className="mb-3">
               <label className="form-label" htmlFor="address">
-                Direccion
+                Dirección
               </label>
               <input
                 className="form-control"
@@ -357,8 +507,9 @@ function OCRRegister({ user }) {
               />
             </div>
 
+            <h3 className="h5 mb-3">Paso 4: Guardar huésped</h3>
             <button className="btn btn-primary" disabled={!canWrite || saving} type="submit">
-              {saving ? "Guardando..." : "Guardar huesped"}
+              {saving ? "Guardando..." : "Guardar huésped"}
             </button>
           </form>
         </div>

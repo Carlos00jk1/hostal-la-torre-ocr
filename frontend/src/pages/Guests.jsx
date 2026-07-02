@@ -17,10 +17,31 @@ const emptyForm = {
   address: "",
   birth_date: "",
   notes: "",
+  is_active: true,
 };
 
 function toInputDate(value) {
   return value ? value.slice(0, 10) : "";
+}
+
+function calculateAge(birthDate) {
+  const inputDate = toInputDate(birthDate);
+  if (!inputDate) {
+    return null;
+  }
+
+  const born = new Date(`${inputDate}T00:00:00`);
+  if (Number.isNaN(born.getTime())) {
+    return null;
+  }
+
+  const today = new Date();
+  let age = today.getFullYear() - born.getFullYear();
+  const monthDiff = today.getMonth() - born.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < born.getDate())) {
+    age -= 1;
+  }
+  return age >= 0 ? age : null;
 }
 
 function normalizePayload(form) {
@@ -34,7 +55,7 @@ function normalizePayload(form) {
     address: form.address || null,
     birth_date: form.birth_date ? `${form.birth_date}T00:00:00` : null,
     notes: form.notes || null,
-    is_active: true,
+    is_active: form.is_active,
   };
 }
 
@@ -50,6 +71,7 @@ function Guests({ user }) {
   const roleName = user?.role?.name;
   const isAdmin = roleName === "Administrador";
   const canWrite = isAdmin || roleName === "Recepcionista";
+  const formAge = calculateAge(form.birth_date);
 
   async function loadGuests() {
     setLoading(true);
@@ -90,6 +112,7 @@ function Guests({ user }) {
       address: guest.address ?? "",
       birth_date: toInputDate(guest.birth_date),
       notes: guest.notes ?? "",
+      is_active: guest.is_active,
     });
     setMessage("");
     setError("");
@@ -104,10 +127,10 @@ function Guests({ user }) {
     try {
       if (editingId) {
         await updateGuest(editingId, normalizePayload(form));
-        setMessage("Huesped actualizado correctamente.");
+        setMessage("Huésped actualizado correctamente.");
       } else {
         await createGuest(normalizePayload(form));
-        setMessage("Huesped registrado correctamente.");
+        setMessage("Huésped registrado correctamente.");
       }
       resetForm();
       await loadGuests();
@@ -123,7 +146,7 @@ function Guests({ user }) {
     setError("");
     try {
       await deactivateGuest(guestId);
-      setMessage("Huesped desactivado correctamente.");
+      setMessage("Huésped desactivado correctamente.");
       await loadGuests();
     } catch (err) {
       setError(err.message);
@@ -134,13 +157,13 @@ function Guests({ user }) {
     <section>
       <div className="d-flex flex-column flex-lg-row gap-3 justify-content-between align-items-lg-center mb-4">
         <div>
-          <h2 className="h4 mb-1">Huespedes</h2>
+          <h2 className="h4 mb-1">Huéspedes</h2>
           <p className="text-secondary mb-0">
-            Administra los datos de identificacion y contacto de los huespedes.
+            Administra los datos de identificación y contacto de los huéspedes.
           </p>
         </div>
         <span className="badge text-bg-primary align-self-start">
-          {guests.length} huespedes
+          {guests.length} huéspedes
         </span>
       </div>
 
@@ -152,7 +175,7 @@ function Guests({ user }) {
           <div className="col-xl-5">
             <form className="bg-white border rounded-2 p-4" onSubmit={handleSubmit}>
               <h3 className="h5 mb-3">
-                {editingId ? "Editar huesped" : "Nuevo huesped"}
+                {editingId ? "Editar huésped" : "Nuevo huésped"}
               </h3>
 
               <div className="mb-3">
@@ -207,7 +230,7 @@ function Guests({ user }) {
               <div className="row">
                 <div className="col-md-6 mb-3">
                   <label className="form-label" htmlFor="phone">
-                    Telefono
+                    Teléfono
                   </label>
                   <input
                     className="form-control"
@@ -230,6 +253,9 @@ function Guests({ user }) {
                     type="date"
                     value={form.birth_date}
                   />
+                  <div className="form-text">
+                    {formAge !== null ? `Edad: ${formAge} años` : "Edad no calculada"}
+                  </div>
                 </div>
               </div>
 
@@ -263,7 +289,7 @@ function Guests({ user }) {
 
               <div className="mb-3">
                 <label className="form-label" htmlFor="address">
-                  Direccion
+                  Dirección
                 </label>
                 <input
                   className="form-control"
@@ -291,7 +317,7 @@ function Guests({ user }) {
 
               <div className="d-flex gap-2">
                 <button className="btn btn-primary" disabled={saving} type="submit">
-                  {saving ? "Guardando..." : "Guardar huesped"}
+                  {saving ? "Guardando..." : "Guardar huésped"}
                 </button>
                 {editingId ? (
                   <button className="btn btn-outline-secondary" onClick={resetForm} type="button">
@@ -320,7 +346,7 @@ function Guests({ user }) {
                   {loading ? (
                     <tr>
                       <td className="text-secondary" colSpan="5">
-                        Cargando huespedes...
+                        Cargando huéspedes...
                       </td>
                     </tr>
                   ) : null}
@@ -328,7 +354,7 @@ function Guests({ user }) {
                   {!loading && guests.length === 0 ? (
                     <tr>
                       <td className="text-secondary" colSpan="5">
-                        No hay huespedes registrados.
+                        No hay huéspedes registrados.
                       </td>
                     </tr>
                   ) : null}
@@ -340,6 +366,18 @@ function Guests({ user }) {
                             <p className="fw-semibold mb-0">{guest.full_name}</p>
                             <small className="text-secondary">
                               {guest.nationality || "Sin nacionalidad"}
+                            </small>
+                            <br />
+                            <small className="text-secondary">
+                              {guest.birth_date
+                                ? `Fecha nacimiento: ${toInputDate(guest.birth_date)}`
+                                : "Sin fecha nacimiento"}
+                            </small>
+                            <br />
+                            <small className="text-secondary">
+                              {calculateAge(guest.birth_date) !== null
+                                ? `Edad: ${calculateAge(guest.birth_date)} años`
+                                : "Edad no calculada"}
                             </small>
                           </td>
                           <td>

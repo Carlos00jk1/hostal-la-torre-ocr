@@ -2,7 +2,7 @@ const modules = [
   {
     path: "/users",
     label: "Usuarios y roles",
-    description: "Administracion de usuarios, roles y permisos del sistema.",
+    description: "Administración de usuarios, roles y permisos del sistema.",
     roles: ["Administrador"],
   },
   {
@@ -20,7 +20,7 @@ const modules = [
   {
     path: "/services",
     label: "Servicios del hostal",
-    description: "Administracion de servicios ofrecidos a huespedes.",
+    description: "Administración de servicios ofrecidos a huéspedes.",
     roles: ["Administrador", "Recepcionista"],
   },
   {

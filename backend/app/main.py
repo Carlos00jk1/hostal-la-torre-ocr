@@ -6,6 +6,7 @@ from app.routers import (
     guests_routes,
     ocr_routes,
     purchases_routes,
+    reports_routes,
     sales_routes,
     services_routes,
     users_routes,
@@ -35,3 +36,4 @@ app.include_router(purchases_routes.router)
 app.include_router(sales_routes.router)
 app.include_router(ocr_routes.router)
 app.include_router(users_routes.roles_router)
+app.include_router(reports_routes.router)

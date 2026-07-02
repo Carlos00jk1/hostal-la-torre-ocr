@@ -176,7 +176,7 @@ function Services({ user }) {
 
               <div className="mb-3">
                 <label className="form-label" htmlFor="category">
-                  Categoria
+                  Categoría
                 </label>
                 <select
                   className="form-select"
@@ -229,7 +229,7 @@ function Services({ user }) {
 
               <div className="mb-3">
                 <label className="form-label" htmlFor="description">
-                  Descripcion
+                  Descripción
                 </label>
                 <textarea
                   className="form-control"
@@ -280,7 +280,7 @@ function Services({ user }) {
                 <thead>
                   <tr>
                     <th>Servicio</th>
-                    <th>Categoria</th>
+                    <th>Categoría</th>
                     <th>Precio</th>
                     <th>Stock</th>
                     <th>Estado</th>

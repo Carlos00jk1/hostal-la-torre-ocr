@@ -49,7 +49,7 @@ function Login({ onLogin }) {
 
         <div className="mb-3">
           <label className="form-label" htmlFor="password">
-            Contrasena
+            Contraseña
           </label>
           <input
             className="form-control"

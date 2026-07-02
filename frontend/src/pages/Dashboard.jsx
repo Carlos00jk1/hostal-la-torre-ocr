@@ -16,7 +16,7 @@ function Dashboard({ user }) {
           (OCR)
         </h2>
         <p className="text-secondary mb-0">
-          Automatizacion del registro y administracion operativa en el Hostal La
+          Automatización del registro y administración operativa en el Hostal La
           Torre.
         </p>
       </div>
@@ -45,7 +45,7 @@ function Dashboard({ user }) {
               <div className="bg-white border rounded-2 p-4 h-100">
                 <h3 className="h5">{module.label}</h3>
                 <p className="text-secondary mb-3">{module.description}</p>
-                <span className="btn btn-sm btn-primary">Abrir modulo</span>
+                <span className="btn btn-sm btn-primary">Abrir módulo</span>
               </div>
             </Link>
           </div>

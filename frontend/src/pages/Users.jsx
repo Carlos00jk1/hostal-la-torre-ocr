@@ -164,7 +164,7 @@ function Users() {
 
             <div className="mb-3">
               <label className="form-label" htmlFor="password">
-                Contrasena
+                Contraseña
               </label>
               <input
                 className="form-control"
@@ -177,7 +177,7 @@ function Users() {
               />
               {editingId ? (
                 <div className="form-text">
-                  Deja este campo vacio para conservar la contrasena actual.
+                  Deja este campo vacío para conservar la contraseña actual.
                 </div>
               ) : null}
             </div>

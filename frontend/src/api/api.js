@@ -32,7 +32,7 @@ export async function login(username, password) {
   });
 
   if (!response.ok) {
-    throw new Error("Usuario o contrasena incorrectos");
+    throw new Error("Usuario o contraseña incorrectos");
   }
 
   return response.json();
@@ -177,6 +177,10 @@ export function getRoles() {
   return request("/roles");
 }
 
+export function getReportSummary() {
+  return request("/reports/summary");
+}
+
 export function getGuests() {
   return request("/guests");
 }
@@ -207,6 +211,33 @@ export async function extractOCR(file) {
   body.append("file", file);
 
   const response = await fetch(`${API_URL}/ocr/extract`, {
+    method: "POST",
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body,
+  });
+
+  if (!response.ok) {
+    let message = "Error al procesar OCR";
+    try {
+      const error = await response.json();
+      message = error.detail ?? message;
+    } catch {
+      message = response.statusText || message;
+    }
+    throw new Error(message);
+  }
+
+  return response.json();
+}
+
+export async function extractOCRMultiple(files) {
+  const token = getToken();
+  const body = new FormData();
+  files.forEach((file) => body.append("files", file));
+
+  const response = await fetch(`${API_URL}/ocr/extract-multiple`, {
     method: "POST",
     headers: {
       ...(token ? { Authorization: `Bearer ${token}` } : {}),

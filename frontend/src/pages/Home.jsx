@@ -3,7 +3,7 @@ function Home() {
     <section>
       <h1 className="h3">Sistema de gestion Hostal La Torre</h1>
       <p className="text-secondary">
-        Base inicial para administracion operativa con integracion OCR futura.
+        Base inicial para administración operativa con integración OCR futura.
       </p>
     </section>
   );

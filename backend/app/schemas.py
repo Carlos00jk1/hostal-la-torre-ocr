@@ -1,7 +1,7 @@
 from datetime import datetime
 from decimal import Decimal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class HealthResponse(BaseModel):
@@ -86,6 +86,26 @@ class OCRExtractResponse(BaseModel):
     extracted_text: str
     detected_full_name: str | None = None
     detected_document_number: str | None = None
+    detected_fields: dict[str, str | int | None] = Field(default_factory=dict)
+    ocr_debug: dict[str, int | str] = Field(default_factory=dict)
+
+
+class OCRFileExtractResult(BaseModel):
+    original_filename: str | None = None
+    filename: str | None = None
+    extracted_text: str = ""
+    status: str
+    error: str | None = None
+    ocr_debug: dict[str, int | str] = Field(default_factory=dict)
+
+
+class OCRMultipleExtractResponse(BaseModel):
+    combined_text: str
+    detected_full_name: str | None = None
+    detected_document_number: str | None = None
+    detected_fields: dict[str, str | int | None] = Field(default_factory=dict)
+    ocr_debug: dict[str, int | str] = Field(default_factory=dict)
+    files: list[OCRFileExtractResult]
 
 
 class ProductServiceBase(BaseModel):
@@ -211,3 +231,35 @@ class SaleRead(SaleBase):
     details: list[SaleDetailRead]
 
     model_config = {"from_attributes": True}
+
+
+class RecentSaleRead(BaseModel):
+    id: int
+    customer_name: str
+    sale_date: datetime
+    payment_method: str
+    total_amount: Decimal
+    status: str
+
+    model_config = {"from_attributes": True}
+
+
+class RecentPurchaseRead(BaseModel):
+    id: int
+    supplier_name: str
+    purchase_date: datetime
+    total_amount: Decimal
+    is_cancelled: bool
+
+    model_config = {"from_attributes": True}
+
+
+class ReportSummaryRead(BaseModel):
+    total_services_active: int
+    total_purchases: int
+    total_purchase_amount: Decimal
+    total_sales: int
+    total_sales_amount: Decimal
+    total_guests_active: int
+    recent_sales: list[RecentSaleRead]
+    recent_purchases: list[RecentPurchaseRead]

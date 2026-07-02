@@ -340,7 +340,7 @@ function Sales({ user }) {
 
                   <div className="mb-2">
                     <label className="form-label" htmlFor={`description_${index}`}>
-                      Descripcion
+                      Descripción
                     </label>
                     <input
                       className="form-control"
@@ -548,7 +548,7 @@ function Sales({ user }) {
                 <table className="table table-sm">
                   <thead>
                     <tr>
-                      <th>Descripcion</th>
+                      <th>Descripción</th>
                       <th>Cantidad</th>
                       <th>Precio unitario</th>
                       <th>Subtotal</th>
