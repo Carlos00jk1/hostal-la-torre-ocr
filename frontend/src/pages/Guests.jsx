@@ -4,6 +4,7 @@ import {
   createGuest,
   deactivateGuest,
   getGuests,
+  reactivateGuest,
   updateGuest,
 } from "../api/api.js";
 
@@ -138,6 +139,19 @@ function Guests({ user }) {
       setError(err.message);
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleReactivate(guestId) {
+    if (!window.confirm("Confirma que desea reactivar este huesped?")) return;
+    setMessage("");
+    setError("");
+    try {
+      await reactivateGuest(guestId);
+      setMessage("Huesped reactivado correctamente.");
+      await loadGuests();
+    } catch (err) {
+      setError(err.message);
     }
   }
 
@@ -413,14 +427,25 @@ function Guests({ user }) {
                                 </button>
                               ) : null}
                               {isAdmin ? (
-                                <button
-                                  className="al-btn-sm al-btn-outline-danger"
-                                  disabled={!guest.is_active}
-                                  onClick={() => handleDeactivate(guest.id)}
-                                  type="button"
-                                >
-                                  Desactivar
-                                </button>
+                                <>
+                                  <button
+                                    className="al-btn-sm al-btn-outline-danger"
+                                    disabled={!guest.is_active}
+                                    onClick={() => handleDeactivate(guest.id)}
+                                    type="button"
+                                  >
+                                    Desactivar
+                                  </button>
+                                  {!guest.is_active ? (
+                                    <button
+                                      className="al-btn-sm al-btn-outline-primary"
+                                      onClick={() => handleReactivate(guest.id)}
+                                      type="button"
+                                    >
+                                      Reactivar
+                                    </button>
+                                  ) : null}
+                                </>
                               ) : null}
                             </div>
                           </td>

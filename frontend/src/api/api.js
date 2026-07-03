@@ -205,6 +205,20 @@ export function deactivateGuest(guestId) {
   });
 }
 
+export function reactivateGuest(guestId) {
+  return request(`/guests/${guestId}`, {
+    method: "PUT",
+    body: JSON.stringify({ is_active: true }),
+  });
+}
+
+export function reactivateUser(userId) {
+  return request(`/users/${userId}`, {
+    method: "PUT",
+    body: JSON.stringify({ is_active: true }),
+  });
+}
+
 export async function extractOCR(file) {
   const token = getToken();
   const body = new FormData();

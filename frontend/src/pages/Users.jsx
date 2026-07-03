@@ -5,6 +5,7 @@ import {
   deactivateUser,
   getRoles,
   getUsers,
+  reactivateUser,
   updateUser,
 } from "../api/api.js";
 
@@ -108,6 +109,19 @@ function Users() {
       setError(err.message);
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleReactivate(userId) {
+    if (!window.confirm("Confirma que desea reactivar este usuario?")) return;
+    setMessage("");
+    setError("");
+    try {
+      await reactivateUser(userId);
+      setMessage("Usuario reactivado correctamente.");
+      await loadData();
+    } catch (err) {
+      setError(err.message);
     }
   }
 
@@ -293,6 +307,15 @@ function Users() {
                               >
                                 Desactivar
                               </button>
+                              {!user.is_active ? (
+                                <button
+                                  className="al-btn-sm al-btn-outline-primary"
+                                  onClick={() => handleReactivate(user.id)}
+                                  type="button"
+                                >
+                                  Reactivar
+                                </button>
+                              ) : null}
                             </div>
                           </td>
                         </tr>
