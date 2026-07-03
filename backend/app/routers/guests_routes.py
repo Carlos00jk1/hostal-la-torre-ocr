@@ -81,3 +81,15 @@ def deactivate_guest(
     db.commit()
     db.refresh(guest)
     return guest
+
+
+@router.delete("/{guest_id}/hard", response_model=dict)
+def hard_delete_guest(
+    guest_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_roles("Administrador")),
+):
+    guest = get_guest_or_404(db, guest_id)
+    db.delete(guest)
+    db.commit()
+    return {"message": "Huesped eliminado permanentemente"}

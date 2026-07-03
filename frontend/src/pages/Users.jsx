@@ -23,6 +23,7 @@ function Users() {
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [showForm, setShowForm] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -56,11 +57,9 @@ function Users() {
   }
 
   function resetForm() {
-    setForm({
-      ...emptyForm,
-      role_id: roles.length > 0 ? String(roles[0].id) : "",
-    });
+    setForm(emptyForm);
     setEditingId(null);
+    setShowForm(false);
   }
 
   function startEdit(user) {
@@ -73,6 +72,7 @@ function Users() {
     });
     setMessage("");
     setError("");
+    setShowForm(true);
   }
 
   function buildPayload() {
@@ -149,16 +149,29 @@ function Users() {
             Administra las cuentas de acceso y los permisos por rol.
           </p>
         </div>
-        <span className="al-badge al-badge-primary align-self-start">
-          {users.length} usuarios
-        </span>
+        <div className="d-flex gap-2">
+          <button
+            className="al-btn-ghost"
+            onClick={() => {
+              setShowForm(!showForm);
+              if (showForm) resetForm();
+            }}
+            type="button"
+          >
+            {showForm ? "Ocultar formulario" : "Nuevo usuario"}
+          </button>
+          <span className="al-badge al-badge-primary align-self-center">
+            {users.length} usuarios
+          </span>
+        </div>
       </div>
 
       {message ? <div className="al-alert al-alert-success">{message}</div> : null}
       {error ? <div className="al-alert al-alert-danger">{error}</div> : null}
 
       <div className="row g-4">
-        <div className="col-xl-4">
+        {isAdmin && showForm ? (
+          <div className="col-12">
           <form className="al-card p-4" onSubmit={handleSubmit}>
             <h3 className="h5 mb-3">
               {editingId ? "Editar usuario" : "Nuevo usuario"}
@@ -248,8 +261,9 @@ function Users() {
             </div>
           </form>
         </div>
+        ) : null}
 
-        <div className="col-xl-8">
+        <div className="col-12">
           <div className="al-card">
             <div className="al-table-responsive">
               <table className="al-table">

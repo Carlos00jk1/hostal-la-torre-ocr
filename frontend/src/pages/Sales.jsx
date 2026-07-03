@@ -47,6 +47,7 @@ function Sales({ user }) {
   const [selectedSale, setSelectedSale] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [showForm, setShowForm] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -95,7 +96,9 @@ function Sales({ user }) {
       details: [{ ...emptyDetail }],
       sale_date: new Date().toISOString().slice(0, 10),
     });
+    setFormTotal(0);
     setEditingId(null);
+    setShowForm(false);
   }
 
   function handleFieldChange(event) {
@@ -163,8 +166,10 @@ function Sales({ user }) {
         unit_price: String(detail.unit_price),
       })),
     });
+    setFormTotal(sale.total_amount);
     setMessage("");
     setError("");
+    setShowForm(true);
   }
 
   function buildPayload() {
@@ -231,17 +236,31 @@ function Sales({ user }) {
             Registra ingresos por hospedaje, servicios y consumos del hostal.
           </p>
         </div>
-        <span className="al-badge al-badge-primary align-self-start">
-          {sales.length} ventas
-        </span>
+        <div className="d-flex gap-2">
+          {canCreate && (
+            <button
+              className="al-btn-ghost"
+              onClick={() => {
+                setShowForm(!showForm);
+                if (showForm) resetForm();
+              }}
+              type="button"
+            >
+              {showForm ? "Ocultar formulario" : "Nueva venta"}
+            </button>
+          )}
+          <span className="al-badge al-badge-primary align-self-center">
+            {sales.length} ventas
+          </span>
+        </div>
       </div>
 
       {message ? <div className="al-alert al-alert-success">{message}</div> : null}
       {error ? <div className="al-alert al-alert-danger">{error}</div> : null}
 
       <div className="row g-4">
-        {canCreate ? (
-          <div className="col-xl-5">
+        {canCreate && showForm ? (
+          <div className="col-12">
             <form className="al-card p-4" onSubmit={handleSubmit}>
               <h3 className="h5 mb-3">
                 {editingId ? "Editar venta" : "Nueva venta"}
@@ -431,7 +450,7 @@ function Sales({ user }) {
           </div>
         ) : null}
 
-        <div className={canCreate ? "col-xl-7" : "col-12"}>
+        <div className="col-12">
           <div className="al-card mb-4">
             <div className="al-table-responsive">
               <table className="al-table">

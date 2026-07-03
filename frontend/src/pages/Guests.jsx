@@ -4,6 +4,7 @@ import {
   createGuest,
   deactivateGuest,
   getGuests,
+  hardDeleteGuest,
   reactivateGuest,
   updateGuest,
 } from "../api/api.js";
@@ -66,6 +67,7 @@ function Guests({ user }) {
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [showForm, setShowForm] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -93,12 +95,20 @@ function Guests({ user }) {
 
   function handleFieldChange(event) {
     const { name, value } = event.target;
-    setForm((current) => ({ ...current, [name]: value }));
+    setForm((current) => {
+      const next = { ...current, [name]: value };
+      if (name === "birth_date") {
+        setFormAge(calculateAge(value));
+      }
+      return next;
+    });
   }
 
   function resetForm() {
-    setForm(emptyForm);
+    setForm({ ...emptyForm });
+    setFormAge(null);
     setEditingId(null);
+    setShowForm(false);
   }
 
   function startEdit(guest) {
@@ -115,8 +125,10 @@ function Guests({ user }) {
       notes: guest.notes ?? "",
       is_active: guest.is_active,
     });
+    setFormAge(calculateAge(guest.birth_date));
     setMessage("");
     setError("");
+    setShowForm(true);
   }
 
   async function handleSubmit(event) {
@@ -170,6 +182,21 @@ function Guests({ user }) {
     }
   }
 
+  async function handleHardDelete(guestId) {
+    if (!window.confirm("¡ATENCION! ¿Confirma que desea ELIMINAR FISICAMENTE a este huesped de la base de datos? Esta accion no se puede deshacer.")) {
+      return;
+    }
+    setMessage("");
+    setError("");
+    try {
+      await hardDeleteGuest(guestId);
+      setMessage("Huesped eliminado permanentemente.");
+      await loadGuests();
+    } catch (err) {
+      setError("No se pudo eliminar el huesped. Asegurese de que no tenga ventas o documentos OCR asociados.");
+    }
+  }
+
   return (
     <section>
       <div className="d-flex flex-column flex-lg-row gap-3 justify-content-between align-items-lg-center mb-4">
@@ -179,17 +206,29 @@ function Guests({ user }) {
             Administra los datos de identificación y contacto de los huéspedes.
           </p>
         </div>
-        <span className="al-badge al-badge-primary align-self-start">
-          {guests.length} huéspedes
-        </span>
+        <div className="d-flex gap-2">
+          <button
+            className="al-btn-ghost"
+            onClick={() => {
+              setShowForm(!showForm);
+              if (showForm) resetForm();
+            }}
+            type="button"
+          >
+            {showForm ? "Ocultar formulario" : "Nuevo huésped"}
+          </button>
+          <span className="al-badge al-badge-primary align-self-center">
+            {guests.length} huéspedes
+          </span>
+        </div>
       </div>
 
       {message ? <div className="al-alert al-alert-success">{message}</div> : null}
       {error ? <div className="al-alert al-alert-danger">{error}</div> : null}
 
       <div className="row g-4">
-        {canWrite ? (
-          <div className="col-xl-5">
+        {canWrite && showForm ? (
+          <div className="col-12">
             <form className="al-card p-4" onSubmit={handleSubmit}>
               <h3 className="h5 mb-3">
                 {editingId ? "Editar huesped" : "Nuevo huesped"}
@@ -350,7 +389,7 @@ function Guests({ user }) {
           </div>
         ) : null}
 
-        <div className={canWrite ? "col-xl-7" : "col-12"}>
+        <div className="col-12">
           <div className="al-card">
             <div className="al-table-responsive">
               <table className="al-table">
@@ -435,6 +474,13 @@ function Guests({ user }) {
                                     type="button"
                                   >
                                     Desactivar
+                                  </button>
+                                  <button
+                                    className="al-btn-sm al-btn-danger"
+                                    onClick={() => handleHardDelete(guest.id)}
+                                    type="button"
+                                  >
+                                    Eliminar
                                   </button>
                                   {!guest.is_active ? (
                                     <button

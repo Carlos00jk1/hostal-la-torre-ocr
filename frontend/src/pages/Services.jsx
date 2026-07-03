@@ -39,6 +39,7 @@ function Services({ user }) {
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [showForm, setShowForm] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -76,6 +77,7 @@ function Services({ user }) {
   function resetForm() {
     setForm(emptyForm);
     setEditingId(null);
+    setShowForm(false);
   }
 
   function startEdit(service) {
@@ -90,6 +92,7 @@ function Services({ user }) {
     });
     setMessage("");
     setError("");
+    setShowForm(true);
   }
 
   async function handleSubmit(event) {
@@ -145,17 +148,29 @@ function Services({ user }) {
             Administra conceptos cobrables del hostal: hospedaje, servicios y consumos.
           </p>
         </div>
-        <span className="al-badge al-badge-primary align-self-start">
-          {activeServices.length} activos
-        </span>
+        <div className="d-flex gap-2">
+          <button
+            className="al-btn-ghost"
+            onClick={() => {
+              setShowForm(!showForm);
+              if (showForm) resetForm();
+            }}
+            type="button"
+          >
+            {showForm ? "Ocultar formulario" : "Nuevo servicio"}
+          </button>
+          <span className="al-badge al-badge-primary align-self-center">
+            {services.length} servicios
+          </span>
+        </div>
       </div>
 
       {message ? <div className="al-alert al-alert-success">{message}</div> : null}
       {error ? <div className="al-alert al-alert-danger">{error}</div> : null}
 
       <div className="row g-4">
-        {isAdmin ? (
-          <div className="col-xl-4">
+        {isAdmin && showForm ? (
+          <div className="col-12">
             <form className="al-card p-4" onSubmit={handleSubmit}>
               <h3 className="h5 mb-3">
                 {editingId ? "Editar servicio" : "Nuevo servicio"}
@@ -278,7 +293,7 @@ function Services({ user }) {
           </div>
         ) : null}
 
-        <div className={isAdmin ? "col-xl-8" : "col-12"}>
+        <div className="col-12">
           <div className="al-card">
             <div className="al-table-responsive">
               <table className="al-table">

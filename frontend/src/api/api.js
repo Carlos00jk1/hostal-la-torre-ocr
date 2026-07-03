@@ -205,6 +205,12 @@ export function deactivateGuest(guestId) {
   });
 }
 
+export function hardDeleteGuest(guestId) {
+  return request(`/guests/${guestId}/hard`, {
+    method: "DELETE",
+  });
+}
+
 export function reactivateGuest(guestId) {
   return request(`/guests/${guestId}`, {
     method: "PUT",

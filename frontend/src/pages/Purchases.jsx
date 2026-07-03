@@ -43,6 +43,7 @@ function Purchases({ user }) {
   const [selectedPurchase, setSelectedPurchase] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [showForm, setShowForm] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -75,7 +76,9 @@ function Purchases({ user }) {
       details: [{ ...emptyDetail }],
       purchase_date: new Date().toISOString().slice(0, 10),
     });
+    setFormTotal(0);
     setEditingId(null);
+    setShowForm(false);
   }
 
   function handleFieldChange(event) {
@@ -124,6 +127,7 @@ function Purchases({ user }) {
     });
     setMessage("");
     setError("");
+    setShowForm(true);
   }
 
   function buildPayload() {
@@ -187,17 +191,31 @@ function Purchases({ user }) {
             lavanderia, mantenimiento y articulos de habitacion.
           </p>
         </div>
-        <span className="al-badge al-badge-primary align-self-start">
-          {purchases.length} compras
-        </span>
+        <div className="d-flex gap-2">
+          {isAdmin && (
+            <button
+              className="al-btn-ghost"
+              onClick={() => {
+                setShowForm(!showForm);
+                if (showForm) resetForm();
+              }}
+              type="button"
+            >
+              {showForm ? "Ocultar formulario" : "Nueva compra"}
+            </button>
+          )}
+          <span className="al-badge al-badge-primary align-self-center">
+            {purchases.length} compras
+          </span>
+        </div>
       </div>
 
       {message ? <div className="al-alert al-alert-success">{message}</div> : null}
       {error ? <div className="al-alert al-alert-danger">{error}</div> : null}
 
       <div className="row g-4">
-        {isAdmin ? (
-          <div className="col-xl-5">
+        {isAdmin && showForm ? (
+          <div className="col-12">
             <form className="al-card p-4" onSubmit={handleSubmit}>
               <h3 className="h5 mb-3">
                 {editingId ? "Editar compra" : "Nueva compra"}
@@ -347,7 +365,7 @@ function Purchases({ user }) {
           </div>
         ) : null}
 
-        <div className={isAdmin ? "col-xl-7" : "col-12"}>
+        <div className="col-12">
           <div className="al-card mb-4">
             <div className="al-table-responsive">
               <table className="al-table">
