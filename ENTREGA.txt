@@ -1,0 +1,27 @@
+PROYECTO:
+Sistema de gestión web integrando Reconocimiento Óptico de Caracteres (OCR) para la automatización del registro y administración operativa en el Hostal La Torre.
+
+ESTUDIANTE:
+Carlos Abel Vargas Baños
+
+MATERIA:
+Ingeniería de Software II
+
+TECNOLOGÍAS:
+Backend: FastAPI
+Frontend: React + Vite
+Base de datos: PostgreSQL
+OCR: Tesseract OCR
+
+USUARIO DE PRUEBA:
+admin
+admin123
+
+BACKEND:
+http://127.0.0.1:8001
+
+FRONTEND:
+http://localhost:5173
+
+OBSERVACIÓN:
+Para utilizar OCR se requiere tener instalado Tesseract OCR.
