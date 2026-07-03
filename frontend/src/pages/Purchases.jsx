@@ -192,8 +192,8 @@ function Purchases({ user }) {
         </span>
       </div>
 
-      {message ? <div className="alert alert-success">{message}</div> : null}
-      {error ? <div className="alert alert-danger">{error}</div> : null}
+      {message ? <div className="al-alert al-alert-success">{message}</div> : null}
+      {error ? <div className="al-alert al-alert-danger">{error}</div> : null}
 
       <div className="row g-4">
         {isAdmin ? (
@@ -202,6 +202,8 @@ function Purchases({ user }) {
               <h3 className="h5 mb-3">
                 {editingId ? "Editar compra" : "Nueva compra"}
               </h3>
+
+              <p className="al-form-section-title">Datos de la compra</p>
 
               <div className="row">
                 <div className="col-md-7 mb-3">
@@ -248,8 +250,9 @@ function Purchases({ user }) {
                 />
               </div>
 
+              <p className="al-form-section-title">Items de la compra</p>
               <div className="d-flex justify-content-between align-items-center mb-2">
-                <h4 className="h6 mb-0">Detalles de insumos</h4>
+                <span className="small fw-semibold" style={{color: "#5c4e48"}}>Detalle de insumos</span>
                 <button className="al-btn-sm al-btn-outline-primary" onClick={addDetail} type="button">
                   Agregar detalle
                 </button>
@@ -325,9 +328,9 @@ function Purchases({ user }) {
                 </div>
               ))}
 
-              <div className="d-flex justify-content-between align-items-center border-top pt-3 mb-3">
-                <span className="text-secondary">Total calculado</span>
-                <strong>Bs. {formatCurrency(formTotal)}</strong>
+              <div className="al-total-card mb-3">
+                <span className="al-total-card-label">Total calculado</span>
+                <span className="al-total-card-value">Bs. {formatCurrency(formTotal)}</span>
               </div>
 
               <div className="d-flex gap-2">
@@ -381,13 +384,7 @@ function Purchases({ user }) {
                           <td>{toInputDate(purchase.purchase_date)}</td>
                           <td>Bs. {formatCurrency(purchase.total_amount)}</td>
                           <td>
-                            <span
-                              className={`badge ${
-                                purchase.is_cancelled
-                                  ? "text-bg-secondary"
-                                  : "text-bg-success"
-                              }`}
-                            >
+                            <span className={purchase.is_cancelled ? "al-badge-cancelled" : "al-badge-vigente"}>
                               {purchase.is_cancelled ? "Anulada" : "Vigente"}
                             </span>
                           </td>

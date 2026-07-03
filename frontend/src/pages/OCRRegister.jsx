@@ -220,25 +220,48 @@ function OCRRegister({ user }) {
         </span>
       </div>
 
-      {message ? <div className="alert alert-success">{message}</div> : null}
-      {error ? <div className="alert alert-danger">{error}</div> : null}
-
-      {!canWrite ? (
-        <div className="alert alert-warning">
-          Tu rol solo permite consultar información. El registro OCR requiere rol
-          Administrador o Recepcionista.
+      {message ? <div className="al-alert al-alert-warning">{message}</div> : null}
+      {error ? (
+        <div className="al-alert al-alert-danger">
+          {error.toLowerCase().includes("tesseract") || error.toLowerCase().includes("ocr") || error.toLowerCase().includes("500")
+            ? "El OCR requiere Tesseract instalado en el servidor. Puede completar los datos manualmente en el formulario de la derecha."
+            : error}
         </div>
       ) : null}
 
-      <div className="alert alert-info">
-        La calidad del OCR depende de la iluminación, enfoque y recorte de la
-        imagen. Revise siempre los datos antes de guardar.
+      {!canWrite ? (
+        <div className="al-alert al-alert-warning">
+          Tu rol solo permite consultar informacion. El registro OCR requiere rol Administrador o Recepcionista.
+        </div>
+      ) : null}
+
+      <div className="ocr-steps-banner">
+        <div className={`ocr-step-indicator ${selectedImages.length > 0 ? "done" : "active"}`}>
+          <span className="ocr-step-num">1</span>
+          <span className="ocr-step-label">Cargar imagenes</span>
+        </div>
+        <div className={`ocr-step-indicator ${ocrResult ? "done" : selectedImages.length > 0 ? "active" : ""}`}>
+          <span className="ocr-step-num">2</span>
+          <span className="ocr-step-label">Extraer datos</span>
+        </div>
+        <div className={`ocr-step-indicator ${ocrResult ? "active" : ""}`}>
+          <span className="ocr-step-num">3</span>
+          <span className="ocr-step-label">Revisar informacion</span>
+        </div>
+        <div className="ocr-step-indicator">
+          <span className="ocr-step-num">4</span>
+          <span className="ocr-step-label">Guardar huesped</span>
+        </div>
+      </div>
+
+      <div className="al-alert al-alert-info" style={{marginBottom: "1.25rem"}}>
+        El OCR asiste el registro; revise los datos antes de guardar. La calidad depende de la iluminacion y recorte de la imagen.
       </div>
 
       <div className="row g-4">
         <div className="col-xl-5">
-          <div className="ocr-step-card bg-white border rounded-2 p-4">
-            <h3 className="h5 mb-3">1. Cargar imágenes</h3>
+          <div className="ocr-step-card">
+            <h3 className="h6 mb-3" style={{color: "#a5523a", fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase", fontSize: "0.68rem"}}>Paso 1 — Cargar imagenes</h3>
 
             <div className="ocr-file-picker mb-3">
               <input
@@ -250,31 +273,33 @@ function OCRRegister({ user }) {
                 onChange={handleFileChange}
                 type="file"
               />
-              <label className="btn btn-primary mb-2" htmlFor="ocr_files">
-                Seleccionar imágenes
-              </label>
-              <p className="small text-secondary mb-0">
-                {selectedImages.length > 0
-                  ? `${selectedImages.length} imagen${selectedImages.length === 1 ? "" : "es"} seleccionada${selectedImages.length === 1 ? "" : "s"}`
-                  : "Sin imágenes seleccionadas"}
-              </p>
+              <div className="ocr-drop-zone">
+                <label className="al-file-btn" htmlFor="ocr_files" style={{pointerEvents: canWrite ? "auto" : "none", opacity: canWrite ? 1 : 0.5}}>
+                  Seleccionar imagenes
+                </label>
+                <p className="ocr-drop-zone-label mt-2 mb-0">
+                  {selectedImages.length > 0
+                    ? <><strong>{selectedImages.length}</strong> imagen{selectedImages.length === 1 ? "" : "es"} cargada{selectedImages.length === 1 ? "" : "s"}</>
+                    : <>Sin imagenes seleccionadas</>}
+                </p>
+              </div>
             </div>
 
             {selectedImages.length > 0 ? (
-              <div className="row g-3 mb-3">
+              <div className="ocr-preview-grid mb-3">
                 {selectedImages.map((image) => (
-                  <div className="col-md-6" key={image.id}>
-                    <div className="preview-card border rounded-2 p-2 bg-light h-100">
-                      <img
-                        alt={`Vista previa de ${image.file.name}`}
-                        className="img-fluid rounded-2 mb-2"
-                        src={image.previewUrl}
-                      />
-                      <p className="small text-break mb-2">{image.file.name}</p>
+                  <div className="ocr-preview-item" key={image.id}>
+                    <img
+                      alt={`Vista previa de ${image.file.name}`}
+                      src={image.previewUrl}
+                    />
+                    <div className="ocr-preview-item-footer">
+                      <p className="ocr-preview-item-name">{image.file.name}</p>
                       <button
                         className="al-btn-sm al-btn-outline-danger"
                         disabled={!canWrite || extracting}
                         onClick={() => removeImage(image.id)}
+                        style={{fontSize: "0.68rem", padding: "0.2rem 0.5rem"}}
                         type="button"
                       >
                         Quitar
@@ -283,13 +308,9 @@ function OCRRegister({ user }) {
                   </div>
                 ))}
               </div>
-            ) : (
-              <div className="border rounded-2 p-4 text-center text-secondary mb-3">
-                Sin imágenes seleccionadas.
-              </div>
-            )}
+            ) : null}
 
-            <h3 className="h5 mb-3">2. Extraer texto</h3>
+            <h3 className="h6 mb-2" style={{color: "#a5523a", fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase", fontSize: "0.68rem"}}>Paso 2 — Extraer texto</h3>
             <button
               className="al-btn al-btn-primary"
               disabled={!canWrite || selectedImages.length === 0 || extracting}
@@ -301,8 +322,8 @@ function OCRRegister({ user }) {
           </div>
 
           {ocrResult ? (
-            <div className="ocr-step-card bg-white border rounded-2 p-4 mt-4">
-              <h3 className="h5 mb-3">Texto extraído</h3>
+            <div className="ocr-step-card mt-4">
+              <h3 className="h6 mb-3" style={{color: "#a5523a", fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase", fontSize: "0.68rem"}}>Texto extraido</h3>
               <div className="mb-3">
                 <p className="mb-1">
                   <strong>Nombre detectado:</strong>{" "}
@@ -354,16 +375,16 @@ function OCRRegister({ user }) {
                 ))}
               </div>
 
-              <pre className="bg-light border rounded-2 p-3 small text-wrap mb-0">
-                {ocrResult.combined_text || "Sin texto extraído."}
-              </pre>
+              <div className="ocr-extracted-box mb-3">
+                {ocrResult.combined_text || "Sin texto extraido."}
+              </div>
             </div>
           ) : null}
         </div>
 
         <div className="col-xl-7">
-          <form className="ocr-step-card bg-white border rounded-2 p-4" onSubmit={handleSaveGuest}>
-            <h3 className="h5 mb-3">3. Revisar datos</h3>
+          <form className="ocr-step-card" onSubmit={handleSaveGuest}>
+            <h3 className="h6 mb-3" style={{color: "#a5523a", fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase", fontSize: "0.68rem"}}>Paso 3 — Revisar datos</h3>
 
             <div className="mb-3">
               <label className="form-label" htmlFor="full_name">
@@ -512,9 +533,9 @@ function OCRRegister({ user }) {
               />
             </div>
 
-            <h3 className="h5 mb-3">4. Guardar huésped</h3>
+            <p className="al-form-section-title">Guardar huesped</p>
             <button className="al-btn al-btn-primary" disabled={!canWrite || saving} type="submit">
-              {saving ? "Guardando..." : "Guardar huésped"}
+              {saving ? "Guardando..." : "Guardar huesped"}
             </button>
           </form>
         </div>

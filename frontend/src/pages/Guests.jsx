@@ -170,16 +170,18 @@ function Guests({ user }) {
         </span>
       </div>
 
-      {message ? <div className="alert alert-success">{message}</div> : null}
-      {error ? <div className="alert alert-danger">{error}</div> : null}
+      {message ? <div className="al-alert al-alert-success">{message}</div> : null}
+      {error ? <div className="al-alert al-alert-danger">{error}</div> : null}
 
       <div className="row g-4">
         {canWrite ? (
           <div className="col-xl-5">
             <form className="al-card p-4" onSubmit={handleSubmit}>
               <h3 className="h5 mb-3">
-                {editingId ? "Editar huésped" : "Nuevo huésped"}
+                {editingId ? "Editar huesped" : "Nuevo huesped"}
               </h3>
+
+              <p className="al-form-section-title">Identificacion</p>
 
               <div className="mb-3">
                 <label className="form-label" htmlFor="full_name">
@@ -230,10 +232,11 @@ function Guests({ user }) {
                 </div>
               </div>
 
+              <p className="al-form-section-title">Datos personales</p>
               <div className="row">
                 <div className="col-md-6 mb-3">
                   <label className="form-label" htmlFor="phone">
-                    Teléfono
+                    Telefono
                   </label>
                   <input
                     className="al-input"
@@ -256,12 +259,13 @@ function Guests({ user }) {
                     type="date"
                     value={form.birth_date}
                   />
-                  <div className="form-text">
-                    {formAge !== null ? `Edad: ${formAge} años` : "Edad no calculada"}
+                  <div className="al-form-hint">
+                    {formAge !== null ? `Edad: ${formAge} anos` : "Edad no calculada"}
                   </div>
                 </div>
               </div>
 
+              <p className="al-form-section-title">Contacto y observaciones</p>
               <div className="mb-3">
                 <label className="form-label" htmlFor="email">
                   Email
@@ -393,11 +397,7 @@ function Guests({ user }) {
                             </small>
                           </td>
                           <td>
-                            <span
-                              className={`badge ${
-                                guest.is_active ? "text-bg-success" : "text-bg-secondary"
-                              }`}
-                            >
+                            <span className={guest.is_active ? "al-badge-active" : "al-badge-inactive"}>
                               {guest.is_active ? "Activo" : "Inactivo"}
                             </span>
                           </td>

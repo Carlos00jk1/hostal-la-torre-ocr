@@ -140,8 +140,8 @@ function Users() {
         </span>
       </div>
 
-      {message ? <div className="alert alert-success">{message}</div> : null}
-      {error ? <div className="alert alert-danger">{error}</div> : null}
+      {message ? <div className="al-alert al-alert-success">{message}</div> : null}
+      {error ? <div className="al-alert al-alert-danger">{error}</div> : null}
 
       <div className="row g-4">
         <div className="col-xl-4">
@@ -149,6 +149,8 @@ function Users() {
             <h3 className="h5 mb-3">
               {editingId ? "Editar usuario" : "Nuevo usuario"}
             </h3>
+
+            <p className="al-form-section-title">Datos de acceso</p>
 
             <div className="mb-3">
               <label className="form-label" htmlFor="username">
@@ -185,6 +187,7 @@ function Users() {
               ) : null}
             </div>
 
+            <p className="al-form-section-title">Rol y estado</p>
             <div className="mb-3">
               <label className="form-label" htmlFor="role_id">
                 Rol
@@ -266,14 +269,10 @@ function Users() {
                         <tr key={user.id}>
                           <td className="fw-semibold">{user.username}</td>
                           <td>
-                            <span className="badge badge-role">{user.role.name}</span>
+                            <span className={user.role.name === "Administrador" ? "al-badge-admin" : user.role.name === "Recepcionista" ? "al-badge-recepcionista" : "al-badge-consulta"}>{user.role.name}</span>
                           </td>
                           <td>
-                            <span
-                              className={`badge ${
-                                user.is_active ? "text-bg-success" : "text-bg-secondary"
-                              }`}
-                            >
+                            <span className={user.is_active ? "al-badge-active" : "al-badge-inactive"}>
                               {user.is_active ? "Activo" : "Inactivo"}
                             </span>
                           </td>

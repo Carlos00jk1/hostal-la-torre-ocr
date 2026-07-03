@@ -150,8 +150,8 @@ function Services({ user }) {
         </span>
       </div>
 
-      {message ? <div className="alert alert-success">{message}</div> : null}
-      {error ? <div className="alert alert-danger">{error}</div> : null}
+      {message ? <div className="al-alert al-alert-success">{message}</div> : null}
+      {error ? <div className="al-alert al-alert-danger">{error}</div> : null}
 
       <div className="row g-4">
         {isAdmin ? (
@@ -160,6 +160,8 @@ function Services({ user }) {
               <h3 className="h5 mb-3">
                 {editingId ? "Editar servicio" : "Nuevo servicio"}
               </h3>
+
+              <p className="al-form-section-title">Datos del servicio</p>
 
               <div className="mb-3">
                 <label className="form-label" htmlFor="name">
@@ -195,6 +197,7 @@ function Services({ user }) {
                 </select>
               </div>
 
+              <p className="al-form-section-title">Precio y disponibilidad</p>
               <div className="row">
                 <div className="col-md-6 mb-3">
                   <label className="form-label" htmlFor="price">
@@ -323,13 +326,7 @@ function Services({ user }) {
                           <td>Bs. {formatPrice(service.price)}</td>
                           <td>{service.stock ?? "No aplica"}</td>
                           <td>
-                            <span
-                              className={`badge ${
-                                service.is_active
-                                  ? "text-bg-success"
-                                  : "text-bg-secondary"
-                              }`}
-                            >
+                            <span className={service.is_active ? "al-badge-active" : "al-badge-inactive"}>
                               {service.is_active ? "Activo" : "Inactivo"}
                             </span>
                           </td>

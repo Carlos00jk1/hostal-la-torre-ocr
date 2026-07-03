@@ -236,8 +236,8 @@ function Sales({ user }) {
         </span>
       </div>
 
-      {message ? <div className="alert alert-success">{message}</div> : null}
-      {error ? <div className="alert alert-danger">{error}</div> : null}
+      {message ? <div className="al-alert al-alert-success">{message}</div> : null}
+      {error ? <div className="al-alert al-alert-danger">{error}</div> : null}
 
       <div className="row g-4">
         {canCreate ? (
@@ -246,6 +246,8 @@ function Sales({ user }) {
               <h3 className="h5 mb-3">
                 {editingId ? "Editar venta" : "Nueva venta"}
               </h3>
+
+              <p className="al-form-section-title">Datos del cobro</p>
 
               <div className="row">
                 <div className="col-md-7 mb-3">
@@ -310,8 +312,9 @@ function Sales({ user }) {
                 />
               </div>
 
+              <p className="al-form-section-title">Items del cobro</p>
               <div className="d-flex justify-content-between align-items-center mb-2">
-                <h4 className="h6 mb-0">Detalle de venta</h4>
+                <span className="small fw-semibold" style={{color: "#5c4e48"}}>Detalle de venta</span>
                 <button className="al-btn-sm al-btn-outline-primary" onClick={addDetail} type="button">
                   Agregar detalle
                 </button>
@@ -409,9 +412,9 @@ function Sales({ user }) {
                 </div>
               ))}
 
-              <div className="d-flex justify-content-between align-items-center border-top pt-3 mb-3">
-                <span className="text-secondary">Total calculado</span>
-                <strong>Bs. {formatCurrency(formTotal)}</strong>
+              <div className="al-total-card mb-3">
+                <span className="al-total-card-label">Total calculado</span>
+                <span className="al-total-card-value">Bs. {formatCurrency(formTotal)}</span>
               </div>
 
               <div className="d-flex gap-2">
@@ -467,13 +470,7 @@ function Sales({ user }) {
                           <td>{sale.payment_method}</td>
                           <td>Bs. {formatCurrency(sale.total_amount)}</td>
                           <td>
-                            <span
-                              className={`badge ${
-                                sale.status === "anulada"
-                                  ? "text-bg-secondary"
-                                  : "text-bg-success"
-                              }`}
-                            >
+                            <span className={sale.status === "anulada" ? "al-badge-cancelled" : "al-badge-vigente"}>
                               {sale.status === "anulada" ? "Anulada" : "Vigente"}
                             </span>
                           </td>
@@ -531,13 +528,7 @@ function Sales({ user }) {
                 <span className="badge text-bg-light border">
                   Pago: {selectedSale.payment_method}
                 </span>
-                <span
-                  className={`badge ${
-                    selectedSale.status === "anulada"
-                      ? "text-bg-secondary"
-                      : "text-bg-success"
-                  }`}
-                >
+                <span className={selectedSale.status === "anulada" ? "al-badge-cancelled" : "al-badge-vigente"}>
                   {selectedSale.status === "anulada" ? "Anulada" : "Vigente"}
                 </span>
               </div>

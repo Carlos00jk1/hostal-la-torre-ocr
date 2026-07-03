@@ -62,7 +62,7 @@ function Reports() {
               Resumen de servicios, huéspedes, compras y cobros vigentes.
             </p>
           </div>
-          <button className="btn btn-outline-primary" onClick={loadSummary} type="button">
+          <button className="al-btn-ghost" onClick={loadSummary} type="button">
             Actualizar
           </button>
         </div>
@@ -81,10 +81,10 @@ function Reports() {
           <div className="row g-3 mb-4">
             {cards.map(([label, value, detail]) => (
               <div className="col-md-6 col-xl-4" key={label}>
-                <div className="summary-card bg-white border rounded-2 p-4 h-100">
-                  <p className="small text-secondary mb-1">{label}</p>
-                  <p className="display-6 fw-bold mb-1">{value}</p>
-                  <p className="small text-secondary mb-0">{detail}</p>
+                <div className="al-metric-card h-100">
+                  <p className="al-metric-label">{label}</p>
+                  <p className="al-metric-value">{value}</p>
+                  <p className="al-metric-detail">{detail}</p>
                 </div>
               </div>
             ))}
@@ -93,10 +93,10 @@ function Reports() {
           <div className="row g-4">
             <div className="col-xl-6">
               <div className="content-card bg-white border rounded-2">
-                <div className="p-3 border-bottom d-flex align-items-center justify-content-between">
+                <div className="content-card-header">
                   <div>
-                    <p className="section-eyebrow mb-1">Ingresos</p>
-                    <h3 className="h5 mb-0">Últimas ventas</h3>
+                    <p className="content-card-eyebrow">Ingresos</p>
+                    <h3 className="content-card-title">Ultimas ventas</h3>
                   </div>
                   <span className="al-badge al-badge-primary">{summary.recent_sales.length}</span>
                 </div>
@@ -127,7 +127,7 @@ function Reports() {
                           <td>{sale.payment_method}</td>
                           <td>Bs. {formatCurrency(sale.total_amount)}</td>
                           <td>
-                            <span className={`badge ${sale.status === "anulada" ? "text-bg-secondary" : "text-bg-success"}`}>
+                            <span className={sale.status === "anulada" ? "al-badge-cancelled" : "al-badge-vigente"}>
                               {sale.status === "anulada" ? "Anulada" : "Vigente"}
                             </span>
                           </td>
@@ -141,10 +141,10 @@ function Reports() {
 
             <div className="col-xl-6">
               <div className="content-card bg-white border rounded-2">
-                <div className="p-3 border-bottom d-flex align-items-center justify-content-between">
+                <div className="content-card-header">
                   <div>
-                    <p className="section-eyebrow mb-1">Abastecimiento</p>
-                    <h3 className="h5 mb-0">Últimas compras</h3>
+                    <p className="content-card-eyebrow">Abastecimiento</p>
+                    <h3 className="content-card-title">Ultimas compras</h3>
                   </div>
                   <span className="al-badge al-badge-primary">{summary.recent_purchases.length}</span>
                 </div>
@@ -173,7 +173,7 @@ function Reports() {
                           <td>{toInputDate(purchase.purchase_date)}</td>
                           <td>Bs. {formatCurrency(purchase.total_amount)}</td>
                           <td>
-                            <span className={`badge ${purchase.is_cancelled ? "text-bg-secondary" : "text-bg-success"}`}>
+                            <span className={purchase.is_cancelled ? "al-badge-cancelled" : "al-badge-vigente"}>
                               {purchase.is_cancelled ? "Anulada" : "Vigente"}
                             </span>
                           </td>
