@@ -170,7 +170,7 @@ function Users() {
       {error ? <div className="al-alert al-alert-danger">{error}</div> : null}
 
       <div className="row g-4">
-        {isAdmin && showForm ? (
+        {showForm ? (
           <div className="col-12">
           <form className="al-card p-4" onSubmit={handleSubmit}>
             <h3 className="h5 mb-3">
