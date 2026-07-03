@@ -155,6 +155,19 @@ def deactivate_user(
     return user
 
 
+@router.delete("/{user_id}/hard", response_model=dict)
+def hard_delete_user(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_roles("Administrador")),
+):
+    user = get_user_or_404(db, user_id)
+    prevent_removing_last_active_admin(db, user)
+    db.delete(user)
+    db.commit()
+    return {"message": "Usuario eliminado permanentemente"}
+
+
 @roles_router.get("", response_model=list[RoleRead])
 def list_roles(
     db: Session = Depends(get_db),

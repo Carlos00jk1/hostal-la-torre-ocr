@@ -101,6 +101,12 @@ export function deactivateService(serviceId) {
   });
 }
 
+export function hardDeleteService(serviceId) {
+  return request(`/services/${serviceId}/hard`, {
+    method: "DELETE",
+  });
+}
+
 export function getPurchases() {
   return request("/purchases");
 }
@@ -121,6 +127,12 @@ export function updatePurchase(purchaseId, purchase) {
 
 export function cancelPurchase(purchaseId) {
   return request(`/purchases/${purchaseId}`, {
+    method: "DELETE",
+  });
+}
+
+export function hardDeletePurchase(purchaseId) {
+  return request(`/purchases/${purchaseId}/hard`, {
     method: "DELETE",
   });
 }
@@ -149,6 +161,12 @@ export function cancelSale(saleId) {
   });
 }
 
+export function hardDeleteSale(saleId) {
+  return request(`/sales/${saleId}/hard`, {
+    method: "DELETE",
+  });
+}
+
 export function getUsers() {
   return request("/users");
 }
@@ -169,6 +187,12 @@ export function updateUser(userId, user) {
 
 export function deactivateUser(userId) {
   return request(`/users/${userId}`, {
+    method: "DELETE",
+  });
+}
+
+export function hardDeleteUser(userId) {
+  return request(`/users/${userId}/hard`, {
     method: "DELETE",
   });
 }

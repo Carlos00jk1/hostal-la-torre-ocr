@@ -122,3 +122,15 @@ def cancel_purchase(
     db.commit()
     db.refresh(purchase)
     return purchase
+
+
+@router.delete("/{purchase_id}/hard", response_model=dict)
+def hard_delete_purchase(
+    purchase_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_roles("Administrador")),
+):
+    purchase = get_purchase_or_404(db, purchase_id)
+    db.delete(purchase)
+    db.commit()
+    return {"message": "Compra eliminada permanentemente"}

@@ -4,6 +4,7 @@ import {
   createService,
   deactivateService,
   getServices,
+  hardDeleteService,
   updateService,
 } from "../api/api.js";
 
@@ -40,6 +41,7 @@ function Services({ user }) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -125,7 +127,7 @@ function Services({ user }) {
   }
 
   async function handleDeactivate(serviceId) {
-    if (!window.confirm("¿Confirma que desea desactivar este servicio? No podra usarse en nuevos cobros.")) {
+    if (!window.confirm("¿Confirma que desea desactivar este servicio? No se podra seleccionar en nuevas ventas.")) {
       return;
     }
     setMessage("");
@@ -138,6 +140,26 @@ function Services({ user }) {
       setError(err.message);
     }
   }
+
+  async function handleHardDelete(serviceId) {
+    if (!window.confirm("¡ATENCION! ¿Confirma que desea ELIMINAR FISICAMENTE este servicio de la base de datos? Esta accion no se puede deshacer.")) {
+      return;
+    }
+    setMessage("");
+    setError("");
+    try {
+      await hardDeleteService(serviceId);
+      setMessage("Servicio eliminado permanentemente.");
+      await loadServices();
+    } catch (err) {
+      setError("No se puede eliminar el servicio. Es probable que este asociado a una venta.");
+    }
+  }
+
+  const filteredServices = services.filter((s) =>
+    s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    s.category.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <section>
@@ -159,10 +181,21 @@ function Services({ user }) {
           >
             {showForm ? "Ocultar formulario" : "Nuevo servicio"}
           </button>
-          <span className="al-badge al-badge-primary align-self-center">
-            {services.length} servicios
-          </span>
         </div>
+      </div>
+
+      <div className="mb-4 d-flex justify-content-between align-items-center">
+        <input
+          type="text"
+          className="al-input"
+          placeholder="Buscar por nombre o categoría..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{ maxWidth: "400px" }}
+        />
+        <span className="al-badge al-badge-primary align-self-center">
+          {services.length} servicios en total
+        </span>
       </div>
 
       {message ? <div className="al-alert al-alert-success">{message}</div> : null}
@@ -316,16 +349,16 @@ function Services({ user }) {
                     </tr>
                   ) : null}
 
-                  {!loading && services.length === 0 ? (
+                  {!loading && filteredServices.length === 0 ? (
                     <tr>
-                      <td className="text-secondary" colSpan={isAdmin ? 6 : 5}>
-                        No hay servicios registrados.
+                      <td className="text-secondary py-4" colSpan={isAdmin ? 6 : 5}>
+                        {searchTerm ? "No se encontraron resultados para su busqueda." : "Todavía no hay servicios registrados."}
                       </td>
                     </tr>
                   ) : null}
 
                   {!loading
-                    ? services.map((service) => (
+                    ? filteredServices.map((service) => (
                         <tr key={service.id}>
                           <td>
                             <p className="fw-semibold mb-1">{service.name}</p>
@@ -362,6 +395,13 @@ function Services({ user }) {
                                   type="button"
                                 >
                                   Desactivar
+                                </button>
+                                <button
+                                  className="al-btn-sm al-btn-danger"
+                                  onClick={() => handleHardDelete(service.id)}
+                                  type="button"
+                                >
+                                  Eliminar
                                 </button>
                               </div>
                             </td>

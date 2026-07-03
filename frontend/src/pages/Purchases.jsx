@@ -4,6 +4,7 @@ import {
   cancelPurchase,
   createPurchase,
   getPurchases,
+  hardDeletePurchase,
   updatePurchase,
 } from "../api/api.js";
 
@@ -44,6 +45,7 @@ function Purchases({ user }) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -167,9 +169,7 @@ function Purchases({ user }) {
   }
 
   async function handleCancel(purchaseId) {
-    if (!window.confirm("¿Confirma que desea anular esta compra? Esta accion no se puede deshacer.")) {
-      return;
-    }
+    if (!window.confirm("¿Confirma que desea anular esta compra?")) return;
     setMessage("");
     setError("");
     try {
@@ -180,6 +180,30 @@ function Purchases({ user }) {
       setError(err.message);
     }
   }
+
+  async function handleHardDelete(purchaseId) {
+    if (!window.confirm("¡ATENCION! ¿Confirma que desea ELIMINAR FISICAMENTE esta compra de la base de datos? Se borraran todos sus detalles. Esta accion no se puede deshacer.")) {
+      return;
+    }
+    setMessage("");
+    setError("");
+    try {
+      await hardDeletePurchase(purchaseId);
+      setMessage("Compra eliminada permanentemente.");
+      await loadPurchases();
+      if (selectedPurchase?.id === purchaseId) {
+        setSelectedPurchase(null);
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
+  const filteredPurchases = purchases.filter((p) =>
+    (p.supplier_name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (p.supplier_document || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (p.invoice_number || "").toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <section>
@@ -204,10 +228,21 @@ function Purchases({ user }) {
               {showForm ? "Ocultar formulario" : "Nueva compra"}
             </button>
           )}
-          <span className="al-badge al-badge-primary align-self-center">
-            {purchases.length} compras
-          </span>
         </div>
+      </div>
+
+      <div className="mb-4 d-flex justify-content-between align-items-center">
+        <input
+          type="text"
+          className="al-input"
+          placeholder="Buscar por proveedor, documento o factura..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{ maxWidth: "400px" }}
+        />
+        <span className="al-badge al-badge-primary align-self-center">
+          {purchases.length} compras en total
+        </span>
       </div>
 
       {message ? <div className="al-alert al-alert-success">{message}</div> : null}
@@ -387,16 +422,16 @@ function Purchases({ user }) {
                     </tr>
                   ) : null}
 
-                  {!loading && purchases.length === 0 ? (
+                  {!loading && filteredPurchases.length === 0 ? (
                     <tr>
-                      <td className="text-secondary" colSpan="5">
-                        No hay compras registradas.
+                      <td className="text-secondary py-4" colSpan="7">
+                        {searchTerm ? "No se encontraron resultados para su busqueda." : "Todavía no hay compras registradas."}
                       </td>
                     </tr>
                   ) : null}
 
                   {!loading
-                    ? purchases.map((purchase) => (
+                    ? filteredPurchases.map((purchase) => (
                         <tr key={purchase.id}>
                           <td>{purchase.supplier_name}</td>
                           <td>{toInputDate(purchase.purchase_date)}</td>
@@ -425,13 +460,26 @@ function Purchases({ user }) {
                                     Editar
                                   </button>
                                   <button
-                                    className="al-btn-sm al-btn-outline-danger"
-                                    disabled={purchase.is_cancelled}
-                                    onClick={() => handleCancel(purchase.id)}
-                                    type="button"
-                                  >
-                                    Anular
-                                  </button>
+                                  className="al-btn-sm al-btn-outline-danger"
+                                  disabled={purchase.is_cancelled}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleCancel(purchase.id);
+                                  }}
+                                  type="button"
+                                >
+                                  Anular
+                                </button>
+                                <button
+                                  className="al-btn-sm al-btn-danger"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleHardDelete(purchase.id);
+                                  }}
+                                  type="button"
+                                >
+                                  Eliminar
+                                </button>
                                 </>
                               ) : null}
                             </div>

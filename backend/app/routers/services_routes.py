@@ -88,3 +88,21 @@ def deactivate_service(
     db.commit()
     db.refresh(service)
     return service
+
+
+@router.delete("/{service_id}/hard", response_model=dict)
+def hard_delete_service(
+    service_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_roles("Administrador")),
+):
+    service = db.query(ProductService).filter(ProductService.id == service_id).first()
+    if service is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Servicio no encontrado",
+        )
+
+    db.delete(service)
+    db.commit()
+    return {"message": "Servicio eliminado permanentemente"}

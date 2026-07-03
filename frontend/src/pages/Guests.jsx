@@ -68,6 +68,7 @@ function Guests({ user }) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -197,11 +198,17 @@ function Guests({ user }) {
     }
   }
 
+  const filteredGuests = guests.filter((guest) =>
+    guest.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    guest.document_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (guest.nationality || "").toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <section>
       <div className="d-flex flex-column flex-lg-row gap-3 justify-content-between align-items-lg-center mb-4">
         <div>
-          <h2 className="h4 mb-1">Huéspedes</h2>
+          <h2 className="h4 mb-1">Registro de huéspedes</h2>
           <p className="text-secondary mb-0">
             Administra los datos de identificación y contacto de los huéspedes.
           </p>
@@ -217,10 +224,21 @@ function Guests({ user }) {
           >
             {showForm ? "Ocultar formulario" : "Nuevo huésped"}
           </button>
-          <span className="al-badge al-badge-primary align-self-center">
-            {guests.length} huéspedes
-          </span>
         </div>
+      </div>
+
+      <div className="mb-4 d-flex justify-content-between align-items-center">
+        <input
+          type="text"
+          className="al-input"
+          placeholder="Buscar por nombre, documento o nacionalidad..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{ maxWidth: "400px" }}
+        />
+        <span className="al-badge al-badge-primary align-self-center">
+          {guests.length} huéspedes en total
+        </span>
       </div>
 
       {message ? <div className="al-alert al-alert-success">{message}</div> : null}
@@ -411,16 +429,16 @@ function Guests({ user }) {
                     </tr>
                   ) : null}
 
-                  {!loading && guests.length === 0 ? (
+                  {!loading && filteredGuests.length === 0 ? (
                     <tr>
-                      <td className="text-secondary" colSpan="5">
-                        No hay huéspedes registrados.
+                      <td className="text-secondary py-4" colSpan="5">
+                        {searchTerm ? "No se encontraron resultados para su busqueda." : "Todavía no hay huéspedes registrados."}
                       </td>
                     </tr>
                   ) : null}
 
                   {!loading
-                    ? guests.map((guest) => (
+                    ? filteredGuests.map((guest) => (
                         <tr key={guest.id}>
                           <td>
                             <p className="fw-semibold mb-0">{guest.full_name}</p>

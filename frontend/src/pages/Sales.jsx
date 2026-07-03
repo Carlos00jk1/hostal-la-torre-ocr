@@ -5,6 +5,7 @@ import {
   createSale,
   getSales,
   getServices,
+  hardDeleteSale,
   updateSale,
 } from "../api/api.js";
 
@@ -48,6 +49,7 @@ function Sales({ user }) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -213,9 +215,7 @@ function Sales({ user }) {
   }
 
   async function handleCancel(saleId) {
-    if (!window.confirm("¿Confirma que desea anular esta venta? Esta accion no se puede deshacer.")) {
-      return;
-    }
+    if (!window.confirm("¿Confirma que desea anular esta venta?")) return;
     setMessage("");
     setError("");
     try {
@@ -226,6 +226,30 @@ function Sales({ user }) {
       setError(err.message);
     }
   }
+
+  async function handleHardDelete(saleId) {
+    if (!window.confirm("¡ATENCION! ¿Confirma que desea ELIMINAR FISICAMENTE esta venta de la base de datos? Se borraran todos sus detalles. Esta accion no se puede deshacer.")) {
+      return;
+    }
+    setMessage("");
+    setError("");
+    try {
+      await hardDeleteSale(saleId);
+      setMessage("Venta eliminada permanentemente.");
+      await loadData();
+      if (selectedSale?.id === saleId) {
+        setSelectedSale(null);
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
+  const filteredSales = sales.filter((s) =>
+    (s.customer_name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (s.customer_document || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (s.invoice_number || "").toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <section>
@@ -253,6 +277,20 @@ function Sales({ user }) {
             {sales.length} ventas
           </span>
         </div>
+      </div>
+
+      <div className="mb-4 d-flex justify-content-between align-items-center">
+        <input
+          type="text"
+          className="al-input"
+          placeholder="Buscar por cliente, documento o comprobante..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{ maxWidth: "400px" }}
+        />
+        <span className="al-badge al-badge-primary align-self-center">
+          {sales.length} ventas en total
+        </span>
       </div>
 
       {message ? <div className="al-alert al-alert-success">{message}</div> : null}
@@ -473,16 +511,16 @@ function Sales({ user }) {
                     </tr>
                   ) : null}
 
-                  {!loading && sales.length === 0 ? (
+                  {!loading && filteredSales.length === 0 ? (
                     <tr>
-                      <td className="text-secondary" colSpan="6">
-                        No hay ventas registradas.
+                      <td className="text-secondary py-4" colSpan="7">
+                        {searchTerm ? "No se encontraron resultados para su busqueda." : "Todavía no hay ventas registradas."}
                       </td>
                     </tr>
                   ) : null}
 
                   {!loading
-                    ? sales.map((sale) => (
+                    ? filteredSales.map((sale) => (
                         <tr key={sale.id}>
                           <td>{sale.customer_name}</td>
                           <td>{toInputDate(sale.sale_date)}</td>
@@ -514,10 +552,23 @@ function Sales({ user }) {
                                   <button
                                     className="al-btn-sm al-btn-outline-danger"
                                     disabled={sale.status === "anulada"}
-                                    onClick={() => handleCancel(sale.id)}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleCancel(sale.id);
+                                    }}
                                     type="button"
                                   >
                                     Anular
+                                  </button>
+                                  <button
+                                    className="al-btn-sm al-btn-danger"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleHardDelete(sale.id);
+                                    }}
+                                    type="button"
+                                  >
+                                    Eliminar
                                   </button>
                                 </>
                               ) : null}

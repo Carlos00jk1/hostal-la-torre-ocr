@@ -5,6 +5,7 @@ import {
   deactivateUser,
   getRoles,
   getUsers,
+  hardDeleteUser,
   reactivateUser,
   updateUser,
 } from "../api/api.js";
@@ -24,6 +25,7 @@ function Users() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -140,6 +142,26 @@ function Users() {
     }
   }
 
+  async function handleHardDelete(userId) {
+    if (!window.confirm("¡ATENCION! ¿Confirma que desea ELIMINAR FISICAMENTE a este usuario de la base de datos? Esta accion no se puede deshacer.")) {
+      return;
+    }
+    setMessage("");
+    setError("");
+    try {
+      await hardDeleteUser(userId);
+      setMessage("Usuario eliminado permanentemente.");
+      await loadData();
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
+  const filteredUsers = users.filter((user) =>
+    user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (user.role?.name || "").toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <section>
       <div className="d-flex flex-column flex-lg-row gap-3 justify-content-between align-items-lg-center mb-4">
@@ -164,6 +186,17 @@ function Users() {
             {users.length} usuarios
           </span>
         </div>
+      </div>
+
+      <div className="mb-4">
+        <input
+          type="text"
+          className="al-input"
+          placeholder="Buscar por usuario o rol..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{ maxWidth: "400px" }}
+        />
       </div>
 
       {message ? <div className="al-alert al-alert-success">{message}</div> : null}
@@ -284,16 +317,16 @@ function Users() {
                     </tr>
                   ) : null}
 
-                  {!loading && users.length === 0 ? (
+                  {!loading && filteredUsers.length === 0 ? (
                     <tr>
                       <td className="text-secondary" colSpan="4">
-                        No hay usuarios registrados.
+                        {searchTerm ? "No se encontraron resultados para su busqueda." : "No hay usuarios registrados."}
                       </td>
                     </tr>
                   ) : null}
 
                   {!loading
-                    ? users.map((user) => (
+                    ? filteredUsers.map((user) => (
                         <tr key={user.id}>
                           <td className="fw-semibold">{user.username}</td>
                           <td>
@@ -320,6 +353,13 @@ function Users() {
                                 type="button"
                               >
                                 Desactivar
+                              </button>
+                              <button
+                                className="al-btn-sm al-btn-danger"
+                                onClick={() => handleHardDelete(user.id)}
+                                type="button"
+                              >
+                                Eliminar
                               </button>
                               {!user.is_active ? (
                                 <button
