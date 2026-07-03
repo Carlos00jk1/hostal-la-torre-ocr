@@ -184,7 +184,7 @@ function Purchases({ user }) {
             lavanderia, mantenimiento y articulos de habitacion.
           </p>
         </div>
-        <span className="badge text-bg-primary align-self-start">
+        <span className="al-badge al-badge-primary align-self-start">
           {purchases.length} compras
         </span>
       </div>
@@ -195,7 +195,7 @@ function Purchases({ user }) {
       <div className="row g-4">
         {isAdmin ? (
           <div className="col-xl-5">
-            <form className="bg-white border rounded-2 p-4" onSubmit={handleSubmit}>
+            <form className="al-card p-4" onSubmit={handleSubmit}>
               <h3 className="h5 mb-3">
                 {editingId ? "Editar compra" : "Nueva compra"}
               </h3>
@@ -206,7 +206,7 @@ function Purchases({ user }) {
                     Proveedor
                   </label>
                   <input
-                    className="form-control"
+                    className="al-input"
                     id="supplier_name"
                     name="supplier_name"
                     onChange={handleFieldChange}
@@ -220,7 +220,7 @@ function Purchases({ user }) {
                     Fecha
                   </label>
                   <input
-                    className="form-control"
+                    className="al-input"
                     id="purchase_date"
                     name="purchase_date"
                     onChange={handleFieldChange}
@@ -236,7 +236,7 @@ function Purchases({ user }) {
                   Notas
                 </label>
                 <textarea
-                  className="form-control"
+                  className="al-input"
                   id="notes"
                   name="notes"
                   onChange={handleFieldChange}
@@ -247,7 +247,7 @@ function Purchases({ user }) {
 
               <div className="d-flex justify-content-between align-items-center mb-2">
                 <h4 className="h6 mb-0">Detalles de insumos</h4>
-                <button className="btn btn-sm btn-outline-primary" onClick={addDetail} type="button">
+                <button className="al-btn-sm al-btn-outline-primary" onClick={addDetail} type="button">
                   Agregar detalle
                 </button>
               </div>
@@ -259,7 +259,7 @@ function Purchases({ user }) {
                       Insumo
                     </label>
                     <input
-                      className="form-control"
+                      className="al-input"
                       id={`item_name_${index}`}
                       onChange={(event) =>
                         handleDetailChange(index, "item_name", event.target.value)
@@ -275,7 +275,7 @@ function Purchases({ user }) {
                         Cantidad
                       </label>
                       <input
-                        className="form-control"
+                        className="al-input"
                         id={`quantity_${index}`}
                         min="0.01"
                         onChange={(event) =>
@@ -292,7 +292,7 @@ function Purchases({ user }) {
                         Precio unitario
                       </label>
                       <input
-                        className="form-control"
+                        className="al-input"
                         id={`unit_price_${index}`}
                         min="0"
                         onChange={(event) =>
@@ -312,7 +312,7 @@ function Purchases({ user }) {
                     </div>
                   </div>
                   <button
-                    className="btn btn-sm btn-outline-danger"
+                    className="al-btn-sm al-btn-outline-danger"
                     disabled={form.details.length === 1}
                     onClick={() => removeDetail(index)}
                     type="button"
@@ -328,11 +328,11 @@ function Purchases({ user }) {
               </div>
 
               <div className="d-flex gap-2">
-                <button className="btn btn-primary" disabled={saving} type="submit">
+                <button className="al-btn al-btn-primary" disabled={saving} type="submit">
                   {saving ? "Guardando..." : "Guardar compra"}
                 </button>
                 {editingId ? (
-                  <button className="btn btn-outline-secondary" onClick={resetForm} type="button">
+                  <button className="al-btn al-btn-outline" onClick={resetForm} type="button">
                     Cancelar
                   </button>
                 ) : null}
@@ -342,9 +342,9 @@ function Purchases({ user }) {
         ) : null}
 
         <div className={isAdmin ? "col-xl-7" : "col-12"}>
-          <div className="bg-white border rounded-2 mb-4">
-            <div className="table-responsive">
-              <table className="table align-middle mb-0">
+          <div className="al-card mb-4">
+            <div className="al-table-responsive">
+              <table className="al-table">
                 <thead>
                   <tr>
                     <th>Proveedor</th>
@@ -400,14 +400,14 @@ function Purchases({ user }) {
                               {isAdmin ? (
                                 <>
                                   <button
-                                    className="btn btn-sm btn-outline-primary"
+                                    className="al-btn-sm al-btn-outline-primary"
                                     onClick={() => startEdit(purchase)}
                                     type="button"
                                   >
                                     Editar
                                   </button>
                                   <button
-                                    className="btn btn-sm btn-outline-danger"
+                                    className="al-btn-sm al-btn-outline-danger"
                                     disabled={purchase.is_cancelled}
                                     onClick={() => handleCancel(purchase.id)}
                                     type="button"
@@ -427,7 +427,7 @@ function Purchases({ user }) {
           </div>
 
           {selectedPurchase ? (
-            <div className="bg-white border rounded-2 p-4">
+            <div className="al-card p-4">
               <div className="d-flex justify-content-between gap-3 mb-3">
                 <div>
                   <h3 className="h5 mb-1">Detalle de compra</h3>
@@ -443,7 +443,7 @@ function Purchases({ user }) {
                 <p className="text-secondary">{selectedPurchase.notes}</p>
               ) : null}
 
-              <div className="table-responsive">
+              <div className="al-table-responsive">
                 <table className="table table-sm">
                   <thead>
                     <tr>

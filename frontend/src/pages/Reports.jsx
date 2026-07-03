@@ -98,9 +98,9 @@ function Reports() {
                     <p className="section-eyebrow mb-1">Ingresos</p>
                     <h3 className="h5 mb-0">Últimas ventas</h3>
                   </div>
-                  <span className="badge text-bg-primary">{summary.recent_sales.length}</span>
+                  <span className="al-badge al-badge-primary">{summary.recent_sales.length}</span>
                 </div>
-                <div className="table-responsive">
+                <div className="al-table-responsive">
                   <table className="table table-hover align-middle mb-0">
                     <thead>
                       <tr>
@@ -146,9 +146,9 @@ function Reports() {
                     <p className="section-eyebrow mb-1">Abastecimiento</p>
                     <h3 className="h5 mb-0">Últimas compras</h3>
                   </div>
-                  <span className="badge text-bg-primary">{summary.recent_purchases.length}</span>
+                  <span className="al-badge al-badge-primary">{summary.recent_purchases.length}</span>
                 </div>
-                <div className="table-responsive">
+                <div className="al-table-responsive">
                   <table className="table table-hover align-middle mb-0">
                     <thead>
                       <tr>

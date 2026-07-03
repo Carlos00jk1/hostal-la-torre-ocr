@@ -142,7 +142,7 @@ function Services({ user }) {
             Administra conceptos cobrables del hostal: hospedaje, servicios y consumos.
           </p>
         </div>
-        <span className="badge text-bg-primary align-self-start">
+        <span className="al-badge al-badge-primary align-self-start">
           {activeServices.length} activos
         </span>
       </div>
@@ -153,7 +153,7 @@ function Services({ user }) {
       <div className="row g-4">
         {isAdmin ? (
           <div className="col-xl-4">
-            <form className="bg-white border rounded-2 p-4" onSubmit={handleSubmit}>
+            <form className="al-card p-4" onSubmit={handleSubmit}>
               <h3 className="h5 mb-3">
                 {editingId ? "Editar servicio" : "Nuevo servicio"}
               </h3>
@@ -163,7 +163,7 @@ function Services({ user }) {
                   Nombre
                 </label>
                 <input
-                  className="form-control"
+                  className="al-input"
                   id="name"
                   name="name"
                   onChange={handleChange}
@@ -178,7 +178,7 @@ function Services({ user }) {
                   Categoría
                 </label>
                 <select
-                  className="form-select"
+                  className="al-input"
                   id="category"
                   name="category"
                   onChange={handleChange}
@@ -198,7 +198,7 @@ function Services({ user }) {
                     Precio
                   </label>
                   <input
-                    className="form-control"
+                    className="al-input"
                     id="price"
                     min="0"
                     name="price"
@@ -215,7 +215,7 @@ function Services({ user }) {
                     Stock
                   </label>
                   <input
-                    className="form-control"
+                    className="al-input"
                     id="stock"
                     min="0"
                     name="stock"
@@ -231,7 +231,7 @@ function Services({ user }) {
                   Descripción
                 </label>
                 <textarea
-                  className="form-control"
+                  className="al-input"
                   id="description"
                   name="description"
                   onChange={handleChange}
@@ -255,12 +255,12 @@ function Services({ user }) {
               </div>
 
               <div className="d-flex gap-2">
-                <button className="btn btn-primary" disabled={saving} type="submit">
+                <button className="al-btn al-btn-primary" disabled={saving} type="submit">
                   {saving ? "Guardando..." : "Guardar"}
                 </button>
                 {editingId ? (
                   <button
-                    className="btn btn-outline-secondary"
+                    className="al-btn al-btn-outline"
                     onClick={resetForm}
                     type="button"
                   >
@@ -273,9 +273,9 @@ function Services({ user }) {
         ) : null}
 
         <div className={isAdmin ? "col-xl-8" : "col-12"}>
-          <div className="bg-white border rounded-2">
-            <div className="table-responsive">
-              <table className="table align-middle mb-0">
+          <div className="al-card">
+            <div className="al-table-responsive">
+              <table className="al-table">
                 <thead>
                   <tr>
                     <th>Servicio</th>
@@ -334,14 +334,14 @@ function Services({ user }) {
                             <td>
                               <div className="d-flex flex-wrap gap-2">
                                 <button
-                                  className="btn btn-sm btn-outline-primary"
+                                  className="al-btn-sm al-btn-outline-primary"
                                   onClick={() => startEdit(service)}
                                   type="button"
                                 >
                                   Editar
                                 </button>
                                 <button
-                                  className="btn btn-sm btn-outline-danger"
+                                  className="al-btn-sm al-btn-outline-danger"
                                   disabled={!service.is_active}
                                   onClick={() => handleDeactivate(service.id)}
                                   type="button"

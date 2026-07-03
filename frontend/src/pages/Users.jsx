@@ -132,7 +132,7 @@ function Users() {
             Administra las cuentas de acceso y los permisos por rol.
           </p>
         </div>
-        <span className="badge text-bg-primary align-self-start">
+        <span className="al-badge al-badge-primary align-self-start">
           {users.length} usuarios
         </span>
       </div>
@@ -142,7 +142,7 @@ function Users() {
 
       <div className="row g-4">
         <div className="col-xl-4">
-          <form className="bg-white border rounded-2 p-4" onSubmit={handleSubmit}>
+          <form className="al-card p-4" onSubmit={handleSubmit}>
             <h3 className="h5 mb-3">
               {editingId ? "Editar usuario" : "Nuevo usuario"}
             </h3>
@@ -152,7 +152,7 @@ function Users() {
                 Usuario
               </label>
               <input
-                className="form-control"
+                className="al-input"
                 id="username"
                 name="username"
                 onChange={handleChange}
@@ -167,7 +167,7 @@ function Users() {
                 Contraseña
               </label>
               <input
-                className="form-control"
+                className="al-input"
                 id="password"
                 name="password"
                 onChange={handleChange}
@@ -187,7 +187,7 @@ function Users() {
                 Rol
               </label>
               <select
-                className="form-select"
+                className="al-input"
                 id="role_id"
                 name="role_id"
                 onChange={handleChange}
@@ -217,11 +217,11 @@ function Users() {
             </div>
 
             <div className="d-flex gap-2">
-              <button className="btn btn-primary" disabled={saving} type="submit">
+              <button className="al-btn al-btn-primary" disabled={saving} type="submit">
                 {saving ? "Guardando..." : "Guardar"}
               </button>
               {editingId ? (
-                <button className="btn btn-outline-secondary" onClick={resetForm} type="button">
+                <button className="al-btn al-btn-outline" onClick={resetForm} type="button">
                   Cancelar
                 </button>
               ) : null}
@@ -230,9 +230,9 @@ function Users() {
         </div>
 
         <div className="col-xl-8">
-          <div className="bg-white border rounded-2">
-            <div className="table-responsive">
-              <table className="table align-middle mb-0">
+          <div className="al-card">
+            <div className="al-table-responsive">
+              <table className="al-table">
                 <thead>
                   <tr>
                     <th>Usuario</th>
@@ -277,14 +277,14 @@ function Users() {
                           <td>
                             <div className="d-flex flex-wrap gap-2">
                               <button
-                                className="btn btn-sm btn-outline-primary"
+                                className="al-btn-sm al-btn-outline-primary"
                                 onClick={() => startEdit(user)}
                                 type="button"
                               >
                                 Editar
                               </button>
                               <button
-                                className="btn btn-sm btn-outline-danger"
+                                className="al-btn-sm al-btn-outline-danger"
                                 disabled={!user.is_active}
                                 onClick={() => handleDeactivate(user.id)}
                                 type="button"

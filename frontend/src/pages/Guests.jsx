@@ -162,7 +162,7 @@ function Guests({ user }) {
             Administra los datos de identificación y contacto de los huéspedes.
           </p>
         </div>
-        <span className="badge text-bg-primary align-self-start">
+        <span className="al-badge al-badge-primary align-self-start">
           {guests.length} huéspedes
         </span>
       </div>
@@ -173,7 +173,7 @@ function Guests({ user }) {
       <div className="row g-4">
         {canWrite ? (
           <div className="col-xl-5">
-            <form className="bg-white border rounded-2 p-4" onSubmit={handleSubmit}>
+            <form className="al-card p-4" onSubmit={handleSubmit}>
               <h3 className="h5 mb-3">
                 {editingId ? "Editar huésped" : "Nuevo huésped"}
               </h3>
@@ -183,7 +183,7 @@ function Guests({ user }) {
                   Nombre completo
                 </label>
                 <input
-                  className="form-control"
+                  className="al-input"
                   id="full_name"
                   name="full_name"
                   onChange={handleFieldChange}
@@ -199,7 +199,7 @@ function Guests({ user }) {
                     Tipo documento
                   </label>
                   <select
-                    className="form-select"
+                    className="al-input"
                     id="document_type"
                     name="document_type"
                     onChange={handleFieldChange}
@@ -216,7 +216,7 @@ function Guests({ user }) {
                     Numero documento
                   </label>
                   <input
-                    className="form-control"
+                    className="al-input"
                     id="document_number"
                     name="document_number"
                     onChange={handleFieldChange}
@@ -233,7 +233,7 @@ function Guests({ user }) {
                     Teléfono
                   </label>
                   <input
-                    className="form-control"
+                    className="al-input"
                     id="phone"
                     name="phone"
                     onChange={handleFieldChange}
@@ -246,7 +246,7 @@ function Guests({ user }) {
                     Fecha nacimiento
                   </label>
                   <input
-                    className="form-control"
+                    className="al-input"
                     id="birth_date"
                     name="birth_date"
                     onChange={handleFieldChange}
@@ -264,7 +264,7 @@ function Guests({ user }) {
                   Email
                 </label>
                 <input
-                  className="form-control"
+                  className="al-input"
                   id="email"
                   name="email"
                   onChange={handleFieldChange}
@@ -278,7 +278,7 @@ function Guests({ user }) {
                   Nacionalidad
                 </label>
                 <input
-                  className="form-control"
+                  className="al-input"
                   id="nationality"
                   name="nationality"
                   onChange={handleFieldChange}
@@ -292,7 +292,7 @@ function Guests({ user }) {
                   Dirección
                 </label>
                 <input
-                  className="form-control"
+                  className="al-input"
                   id="address"
                   name="address"
                   onChange={handleFieldChange}
@@ -306,7 +306,7 @@ function Guests({ user }) {
                   Notas
                 </label>
                 <textarea
-                  className="form-control"
+                  className="al-input"
                   id="notes"
                   name="notes"
                   onChange={handleFieldChange}
@@ -316,11 +316,11 @@ function Guests({ user }) {
               </div>
 
               <div className="d-flex gap-2">
-                <button className="btn btn-primary" disabled={saving} type="submit">
+                <button className="al-btn al-btn-primary" disabled={saving} type="submit">
                   {saving ? "Guardando..." : "Guardar huésped"}
                 </button>
                 {editingId ? (
-                  <button className="btn btn-outline-secondary" onClick={resetForm} type="button">
+                  <button className="al-btn al-btn-outline" onClick={resetForm} type="button">
                     Cancelar
                   </button>
                 ) : null}
@@ -330,9 +330,9 @@ function Guests({ user }) {
         ) : null}
 
         <div className={canWrite ? "col-xl-7" : "col-12"}>
-          <div className="bg-white border rounded-2">
-            <div className="table-responsive">
-              <table className="table align-middle mb-0">
+          <div className="al-card">
+            <div className="al-table-responsive">
+              <table className="al-table">
                 <thead>
                   <tr>
                     <th>Nombre</th>
@@ -402,7 +402,7 @@ function Guests({ user }) {
                             <div className="d-flex flex-wrap gap-2">
                               {canWrite ? (
                                 <button
-                                  className="btn btn-sm btn-outline-primary"
+                                  className="al-btn-sm al-btn-outline-primary"
                                   onClick={() => startEdit(guest)}
                                   type="button"
                                 >
@@ -411,7 +411,7 @@ function Guests({ user }) {
                               ) : null}
                               {isAdmin ? (
                                 <button
-                                  className="btn btn-sm btn-outline-danger"
+                                  className="al-btn-sm al-btn-outline-danger"
                                   disabled={!guest.is_active}
                                   onClick={() => handleDeactivate(guest.id)}
                                   type="button"

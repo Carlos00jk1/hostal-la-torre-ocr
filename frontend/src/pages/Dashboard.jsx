@@ -1,88 +1,78 @@
 import { Link } from "react-router-dom";
-
 import { getModulesForRole } from "../config/modules.js";
 
 const moduleLabels = {
-  "/users": "Usuarios y roles",
-  "/guests": "Huéspedes",
+  "/users":        "Usuarios y roles",
+  "/guests":       "Huéspedes",
   "/ocr-register": "Registro OCR",
-  "/services": "Servicios y consumos",
-  "/purchases": "Compras de insumos",
-  "/sales": "Cobros / Ventas",
-  "/reports": "Reportes operativos",
+  "/services":     "Servicios y consumos",
+  "/purchases":    "Compras de insumos",
+  "/sales":        "Cobros / Ventas",
+  "/reports":      "Reportes operativos",
 };
+
+/* SVG paths para cada módulo */
+const moduleIconPaths = {
+  "/users":        [<path key="a" d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>,<circle key="b" cx="9" cy="7" r="4"/>,<path key="c" d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>],
+  "/guests":       [<path key="a" d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>,<circle key="b" cx="12" cy="7" r="4"/>],
+  "/ocr-register": [<rect key="a" x="3" y="3" width="18" height="18" rx="2"/>,<path key="b" d="M3 9h18M9 21V9"/>],
+  "/services":     [<path key="a" d="M18 8h1a4 4 0 0 1 0 8h-1"/>,<path key="b" d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/>,<line key="c" x1="6" y1="1" x2="6" y2="4"/>,<line key="d" x1="10" y1="1" x2="10" y2="4"/>,<line key="e" x1="14" y1="1" x2="14" y2="4"/>],
+  "/purchases":    [<circle key="a" cx="9" cy="21" r="1"/>,<circle key="b" cx="20" cy="21" r="1"/>,<path key="c" d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>],
+  "/sales":        [<line key="a" x1="12" y1="1" x2="12" y2="23"/>,<path key="b" d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>],
+  "/reports":      [<line key="a" x1="18" y1="20" x2="18" y2="10"/>,<line key="b" x1="12" y1="20" x2="12" y2="4"/>,<line key="c" x1="6" y1="20" x2="6" y2="14"/>],
+};
+
+function ModuleIcon({ path }) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"
+      strokeLinejoin="round" aria-hidden="true">
+      {moduleIconPaths[path]}
+    </svg>
+  );
+}
 
 function Dashboard({ user }) {
   const visibleModules = getModulesForRole(user?.role?.name);
 
   return (
-    <section>
-      <div className="admin-hero p-4 p-lg-5 mb-4">
-        <div className="row g-4 align-items-center">
-          <div className="col-lg-8">
-            <p className="section-eyebrow mb-2">Panel administrativo</p>
-            <h2 className="display-6 fw-bold mb-3">
-              Gestión operativa del Hostal La Torre
-            </h2>
-            <p className="text-secondary mb-0">
-              Acceso centralizado para recepción, administración, cobros,
-              compras, reportes y registro OCR de huéspedes.
-            </p>
-          </div>
-          {user ? (
-            <div className="col-lg-4">
-              <div className="session-card p-3">
-                <p className="small text-secondary mb-1">Sesión activa</p>
-                <p className="h5 mb-2">{user.username}</p>
-                <span className="badge badge-role">{user.role.name}</span>
-              </div>
-            </div>
-          ) : null}
+    <div className="db-root">
+
+      {/* Encabezado del panel */}
+      <div className="db-header">
+        <div>
+          <span className="db-eyebrow">Panel administrativo</span>
+          <h1 className="db-title">Bienvenido, {user?.username ?? "usuario"}</h1>
+        </div>
+        <div className="db-role-pill">
+          {user?.role?.name}
         </div>
       </div>
 
-      {visibleModules.some((module) => module.path === "/ocr-register") ? (
-        <Link className="text-decoration-none text-body" to="/ocr-register">
-          <div className="ocr-feature p-4 mb-4">
-            <div className="d-flex flex-column flex-lg-row gap-3 justify-content-between align-items-lg-center">
-              <div>
-                <span className="badge bg-gold-soft text-dark mb-2">Innovación</span>
-                <h3 className="h4 mb-2">Registro OCR de huéspedes</h3>
-                <p className="text-secondary mb-0">
-                  Carga imágenes del documento, detecta datos y agiliza el
-                  registro en recepción.
-                </p>
+      {/* Grid de módulos en tarjetas */}
+      <div className="db-grid">
+        {visibleModules.map((mod) => (
+          <Link className={`db-card${mod.path === "/ocr-register" ? " db-card--ocr" : ""}`}
+            key={mod.path} to={mod.path}>
+            <div className="db-card-top">
+              <div className="db-card-icon">
+                <ModuleIcon path={mod.path} />
               </div>
-              <span className="btn btn-primary">Abrir</span>
+              {mod.path === "/ocr-register" && (
+                <span className="db-card-tag">OCR</span>
+              )}
             </div>
-          </div>
-        </Link>
-      ) : null}
-
-      <div className="row g-3">
-        {visibleModules.map((module) => (
-          <div className="col-md-6 col-xl-4" key={module.path}>
-            <Link className="text-decoration-none text-body" to={module.path}>
-              <div
-                className={`module-card ${
-                  module.path === "/ocr-register" ? "module-card-ocr" : ""
-                }`}
-              >
-                <div className="d-flex align-items-start justify-content-between gap-3 mb-3">
-                  <span className="module-marker" aria-hidden="true" />
-                  <span className="badge bg-gold-soft text-dark">
-                    {module.path === "/ocr-register" ? "Innovación" : "Módulo"}
-                  </span>
-                </div>
-                <h3 className="h5 mb-2">{moduleLabels[module.path] ?? module.label}</h3>
-                <p className="text-secondary mb-4">{module.description}</p>
-                <span className="btn btn-sm btn-primary">Abrir</span>
-              </div>
-            </Link>
-          </div>
+            <h2 className="db-card-title">{moduleLabels[mod.path] ?? mod.label}</h2>
+            <p className="db-card-desc">{mod.description}</p>
+            <span className="db-card-cta">
+              Abrir
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </span>
+          </Link>
         ))}
       </div>
-    </section>
+
+    </div>
   );
 }
 

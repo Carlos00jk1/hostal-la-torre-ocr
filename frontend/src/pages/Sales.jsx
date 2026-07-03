@@ -228,7 +228,7 @@ function Sales({ user }) {
             Registra ingresos por hospedaje, servicios y consumos del hostal.
           </p>
         </div>
-        <span className="badge text-bg-primary align-self-start">
+        <span className="al-badge al-badge-primary align-self-start">
           {sales.length} ventas
         </span>
       </div>
@@ -239,7 +239,7 @@ function Sales({ user }) {
       <div className="row g-4">
         {canCreate ? (
           <div className="col-xl-5">
-            <form className="bg-white border rounded-2 p-4" onSubmit={handleSubmit}>
+            <form className="al-card p-4" onSubmit={handleSubmit}>
               <h3 className="h5 mb-3">
                 {editingId ? "Editar venta" : "Nueva venta"}
               </h3>
@@ -250,7 +250,7 @@ function Sales({ user }) {
                     Cliente
                   </label>
                   <input
-                    className="form-control"
+                    className="al-input"
                     id="customer_name"
                     name="customer_name"
                     onChange={handleFieldChange}
@@ -264,7 +264,7 @@ function Sales({ user }) {
                     Fecha
                   </label>
                   <input
-                    className="form-control"
+                    className="al-input"
                     id="sale_date"
                     name="sale_date"
                     onChange={handleFieldChange}
@@ -280,7 +280,7 @@ function Sales({ user }) {
                   Metodo de pago
                 </label>
                 <select
-                  className="form-select"
+                  className="al-input"
                   id="payment_method"
                   name="payment_method"
                   onChange={handleFieldChange}
@@ -298,7 +298,7 @@ function Sales({ user }) {
                   Notas
                 </label>
                 <textarea
-                  className="form-control"
+                  className="al-input"
                   id="notes"
                   name="notes"
                   onChange={handleFieldChange}
@@ -309,7 +309,7 @@ function Sales({ user }) {
 
               <div className="d-flex justify-content-between align-items-center mb-2">
                 <h4 className="h6 mb-0">Detalle de venta</h4>
-                <button className="btn btn-sm btn-outline-primary" onClick={addDetail} type="button">
+                <button className="al-btn-sm al-btn-outline-primary" onClick={addDetail} type="button">
                   Agregar detalle
                 </button>
               </div>
@@ -321,7 +321,7 @@ function Sales({ user }) {
                       Servicio o producto
                     </label>
                     <select
-                      className="form-select"
+                      className="al-input"
                       id={`service_${index}`}
                       onChange={(event) =>
                         handleDetailChange(index, "product_service_id", event.target.value)
@@ -342,7 +342,7 @@ function Sales({ user }) {
                       Descripción
                     </label>
                     <input
-                      className="form-control"
+                      className="al-input"
                       id={`description_${index}`}
                       onChange={(event) =>
                         handleDetailChange(index, "description", event.target.value)
@@ -359,7 +359,7 @@ function Sales({ user }) {
                         Cantidad
                       </label>
                       <input
-                        className="form-control"
+                        className="al-input"
                         id={`quantity_${index}`}
                         min="0.01"
                         onChange={(event) =>
@@ -376,7 +376,7 @@ function Sales({ user }) {
                         Precio unitario
                       </label>
                       <input
-                        className="form-control"
+                        className="al-input"
                         id={`unit_price_${index}`}
                         min="0"
                         onChange={(event) =>
@@ -396,7 +396,7 @@ function Sales({ user }) {
                     </div>
                   </div>
                   <button
-                    className="btn btn-sm btn-outline-danger"
+                    className="al-btn-sm al-btn-outline-danger"
                     disabled={form.details.length === 1}
                     onClick={() => removeDetail(index)}
                     type="button"
@@ -412,11 +412,11 @@ function Sales({ user }) {
               </div>
 
               <div className="d-flex gap-2">
-                <button className="btn btn-primary" disabled={saving} type="submit">
+                <button className="al-btn al-btn-primary" disabled={saving} type="submit">
                   {saving ? "Guardando..." : "Guardar venta"}
                 </button>
                 {editingId ? (
-                  <button className="btn btn-outline-secondary" onClick={resetForm} type="button">
+                  <button className="al-btn al-btn-outline" onClick={resetForm} type="button">
                     Cancelar
                   </button>
                 ) : null}
@@ -426,9 +426,9 @@ function Sales({ user }) {
         ) : null}
 
         <div className={canCreate ? "col-xl-7" : "col-12"}>
-          <div className="bg-white border rounded-2 mb-4">
-            <div className="table-responsive">
-              <table className="table align-middle mb-0">
+          <div className="al-card mb-4">
+            <div className="al-table-responsive">
+              <table className="al-table">
                 <thead>
                   <tr>
                     <th>Cliente</th>
@@ -486,14 +486,14 @@ function Sales({ user }) {
                               {isAdmin ? (
                                 <>
                                   <button
-                                    className="btn btn-sm btn-outline-primary"
+                                    className="al-btn-sm al-btn-outline-primary"
                                     onClick={() => startEdit(sale)}
                                     type="button"
                                   >
                                     Editar
                                   </button>
                                   <button
-                                    className="btn btn-sm btn-outline-danger"
+                                    className="al-btn-sm al-btn-outline-danger"
                                     disabled={sale.status === "anulada"}
                                     onClick={() => handleCancel(sale.id)}
                                     type="button"
@@ -513,7 +513,7 @@ function Sales({ user }) {
           </div>
 
           {selectedSale ? (
-            <div className="bg-white border rounded-2 p-4">
+            <div className="al-card p-4">
               <div className="d-flex justify-content-between gap-3 mb-3">
                 <div>
                   <h3 className="h5 mb-1">Detalle de venta</h3>
@@ -543,7 +543,7 @@ function Sales({ user }) {
                 <p className="text-secondary">{selectedSale.notes}</p>
               ) : null}
 
-              <div className="table-responsive">
+              <div className="al-table-responsive">
                 <table className="table table-sm">
                   <thead>
                     <tr>

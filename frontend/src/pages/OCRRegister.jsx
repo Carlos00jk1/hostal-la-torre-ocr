@@ -215,7 +215,7 @@ function OCRRegister({ user }) {
             revisarse antes de guardar.
           </p>
         </div>
-        <span className="badge text-bg-primary align-self-start">
+        <span className="al-badge al-badge-primary align-self-start">
           OCR asistido
         </span>
       </div>
@@ -272,7 +272,7 @@ function OCRRegister({ user }) {
                       />
                       <p className="small text-break mb-2">{image.file.name}</p>
                       <button
-                        className="btn btn-sm btn-outline-danger"
+                        className="al-btn-sm al-btn-outline-danger"
                         disabled={!canWrite || extracting}
                         onClick={() => removeImage(image.id)}
                         type="button"
@@ -291,7 +291,7 @@ function OCRRegister({ user }) {
 
             <h3 className="h5 mb-3">2. Extraer texto</h3>
             <button
-              className="btn btn-primary"
+              className="al-btn al-btn-primary"
               disabled={!canWrite || selectedImages.length === 0 || extracting}
               onClick={handleExtract}
               type="button"
@@ -317,7 +317,7 @@ function OCRRegister({ user }) {
               {ocrResult.detected_fields ? (
                 <div className="mb-3">
                   <h4 className="h6">Campos detectados</h4>
-                  <div className="table-responsive">
+                  <div className="al-table-responsive">
                     <table className="table table-sm mb-0">
                       <tbody>
                         {Object.entries(ocrResult.detected_fields)
@@ -370,7 +370,7 @@ function OCRRegister({ user }) {
                 Nombre completo
               </label>
               <input
-                className="form-control"
+                className="al-input"
                 disabled={!canWrite}
                 id="full_name"
                 name="full_name"
@@ -387,7 +387,7 @@ function OCRRegister({ user }) {
                   Tipo documento
                 </label>
                 <select
-                  className="form-select"
+                  className="al-input"
                   disabled={!canWrite}
                   id="document_type"
                   name="document_type"
@@ -405,7 +405,7 @@ function OCRRegister({ user }) {
                   Número documento
                 </label>
                 <input
-                  className="form-control"
+                  className="al-input"
                   disabled={!canWrite}
                   id="document_number"
                   name="document_number"
@@ -423,7 +423,7 @@ function OCRRegister({ user }) {
                   Teléfono
                 </label>
                 <input
-                  className="form-control"
+                  className="al-input"
                   disabled={!canWrite}
                   id="phone"
                   name="phone"
@@ -437,7 +437,7 @@ function OCRRegister({ user }) {
                   Fecha nacimiento
                 </label>
                 <input
-                  className="form-control"
+                  className="al-input"
                   disabled={!canWrite}
                   id="birth_date"
                   name="birth_date"
@@ -457,7 +457,7 @@ function OCRRegister({ user }) {
                   Email
                 </label>
                 <input
-                  className="form-control"
+                  className="al-input"
                   disabled={!canWrite}
                   id="email"
                   name="email"
@@ -471,7 +471,7 @@ function OCRRegister({ user }) {
                   Nacionalidad
                 </label>
                 <input
-                  className="form-control"
+                  className="al-input"
                   disabled={!canWrite}
                   id="nationality"
                   name="nationality"
@@ -487,7 +487,7 @@ function OCRRegister({ user }) {
                 Dirección
               </label>
               <input
-                className="form-control"
+                className="al-input"
                 disabled={!canWrite}
                 id="address"
                 name="address"
@@ -502,7 +502,7 @@ function OCRRegister({ user }) {
                 Notas
               </label>
               <textarea
-                className="form-control"
+                className="al-input"
                 disabled={!canWrite}
                 id="notes"
                 name="notes"
@@ -513,7 +513,7 @@ function OCRRegister({ user }) {
             </div>
 
             <h3 className="h5 mb-3">4. Guardar huésped</h3>
-            <button className="btn btn-primary" disabled={!canWrite || saving} type="submit">
+            <button className="al-btn al-btn-primary" disabled={!canWrite || saving} type="submit">
               {saving ? "Guardando..." : "Guardar huésped"}
             </button>
           </form>
