@@ -4,7 +4,6 @@ import {
   cancelPurchase,
   createPurchase,
   getPurchases,
-  hardDeletePurchase,
   updatePurchase,
 } from "../api/api.js";
 
@@ -176,24 +175,6 @@ function Purchases({ user }) {
       await cancelPurchase(purchaseId);
       setMessage("Compra anulada correctamente.");
       await loadPurchases();
-    } catch (err) {
-      setError(err.message);
-    }
-  }
-
-  async function handleHardDelete(purchaseId) {
-    if (!window.confirm("¡ATENCION! ¿Confirma que desea ELIMINAR FISICAMENTE esta compra de la base de datos? Se borraran todos sus detalles. Esta accion no se puede deshacer.")) {
-      return;
-    }
-    setMessage("");
-    setError("");
-    try {
-      await hardDeletePurchase(purchaseId);
-      setMessage("Compra eliminada permanentemente.");
-      await loadPurchases();
-      if (selectedPurchase?.id === purchaseId) {
-        setSelectedPurchase(null);
-      }
     } catch (err) {
       setError(err.message);
     }
@@ -454,6 +435,7 @@ function Purchases({ user }) {
                                 <>
                                   <button
                                     className="al-btn-sm al-btn-outline-primary"
+                                    disabled={purchase.is_cancelled}
                                     onClick={() => startEdit(purchase)}
                                     type="button"
                                   >
@@ -470,17 +452,7 @@ function Purchases({ user }) {
                                 >
                                   Anular
                                 </button>
-                                <button
-                                  className="al-btn-sm al-btn-danger"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleHardDelete(purchase.id);
-                                  }}
-                                  type="button"
-                                >
-                                  Eliminar
-                                </button>
-                                </>
+                              </>
                               ) : null}
                             </div>
                           </td>

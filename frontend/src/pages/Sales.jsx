@@ -5,7 +5,6 @@ import {
   createSale,
   getSales,
   getServices,
-  hardDeleteSale,
   updateSale,
 } from "../api/api.js";
 
@@ -222,24 +221,6 @@ function Sales({ user }) {
       await cancelSale(saleId);
       setMessage("Venta anulada correctamente.");
       await loadData();
-    } catch (err) {
-      setError(err.message);
-    }
-  }
-
-  async function handleHardDelete(saleId) {
-    if (!window.confirm("¡ATENCION! ¿Confirma que desea ELIMINAR FISICAMENTE esta venta de la base de datos? Se borraran todos sus detalles. Esta accion no se puede deshacer.")) {
-      return;
-    }
-    setMessage("");
-    setError("");
-    try {
-      await hardDeleteSale(saleId);
-      setMessage("Venta eliminada permanentemente.");
-      await loadData();
-      if (selectedSale?.id === saleId) {
-        setSelectedSale(null);
-      }
     } catch (err) {
       setError(err.message);
     }
@@ -544,6 +525,7 @@ function Sales({ user }) {
                                 <>
                                   <button
                                     className="al-btn-sm al-btn-outline-primary"
+                                    disabled={sale.status === "anulada"}
                                     onClick={() => startEdit(sale)}
                                     type="button"
                                   >
@@ -559,16 +541,6 @@ function Sales({ user }) {
                                     type="button"
                                   >
                                     Anular
-                                  </button>
-                                  <button
-                                    className="al-btn-sm al-btn-danger"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleHardDelete(sale.id);
-                                    }}
-                                    type="button"
-                                  >
-                                    Eliminar
                                   </button>
                                 </>
                               ) : null}

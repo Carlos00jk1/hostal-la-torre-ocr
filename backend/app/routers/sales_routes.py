@@ -160,13 +160,3 @@ def cancel_sale(
     return sale
 
 
-@router.delete("/{sale_id}/hard", response_model=dict)
-def hard_delete_sale(
-    sale_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles("Administrador")),
-):
-    sale = get_sale_or_404(db, sale_id)
-    db.delete(sale)
-    db.commit()
-    return {"message": "Venta eliminada permanentemente"}

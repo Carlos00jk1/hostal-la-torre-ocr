@@ -131,12 +131,6 @@ export function cancelPurchase(purchaseId) {
   });
 }
 
-export function hardDeletePurchase(purchaseId) {
-  return request(`/purchases/${purchaseId}/hard`, {
-    method: "DELETE",
-  });
-}
-
 export function getSales() {
   return request("/sales");
 }
@@ -157,12 +151,6 @@ export function updateSale(saleId, sale) {
 
 export function cancelSale(saleId) {
   return request(`/sales/${saleId}`, {
-    method: "DELETE",
-  });
-}
-
-export function hardDeleteSale(saleId) {
-  return request(`/sales/${saleId}/hard`, {
     method: "DELETE",
   });
 }
