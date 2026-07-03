@@ -137,10 +137,9 @@ function Services({ user }) {
     <section>
       <div className="d-flex flex-column flex-lg-row gap-3 justify-content-between align-items-lg-center mb-4">
         <div>
-          <h2 className="h4 mb-1">Servicios del hostal</h2>
+          <h2 className="h4 mb-1">Servicios y consumos</h2>
           <p className="text-secondary mb-0">
-            Administra servicios y productos que el Hostal La Torre puede ofrecer
-            o cobrar.
+            Administra conceptos cobrables del hostal: hospedaje, servicios y consumos.
           </p>
         </div>
         <span className="badge text-bg-primary align-self-start">
@@ -313,7 +312,11 @@ function Services({ user }) {
                               {service.description || "Sin descripcion"}
                             </p>
                           </td>
-                          <td>{service.category}</td>
+                          <td>
+                            <span className="badge bg-gold-soft text-dark">
+                              {service.category}
+                            </span>
+                          </td>
                           <td>Bs. {formatPrice(service.price)}</td>
                           <td>{service.stock ?? "No aplica"}</td>
                           <td>

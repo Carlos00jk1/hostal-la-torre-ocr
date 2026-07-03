@@ -25,30 +25,12 @@ function Reports() {
     }
 
     return [
-      {
-        label: "Servicios activos",
-        value: summary.total_services_active,
-      },
-      {
-        label: "Compras registradas",
-        value: summary.total_purchases,
-      },
-      {
-        label: "Total compras",
-        value: `Bs. ${formatCurrency(summary.total_purchase_amount)}`,
-      },
-      {
-        label: "Ventas registradas",
-        value: summary.total_sales,
-      },
-      {
-        label: "Total ventas",
-        value: `Bs. ${formatCurrency(summary.total_sales_amount)}`,
-      },
-      {
-        label: "Huéspedes activos",
-        value: summary.total_guests_active,
-      },
+      ["Servicios activos", summary.total_services_active, "Servicios disponibles"],
+      ["Huéspedes activos", summary.total_guests_active, "Registros habilitados"],
+      ["Compras registradas", summary.total_purchases, "Compras vigentes"],
+      ["Total compras", `Bs. ${formatCurrency(summary.total_purchase_amount)}`, "Egresos vigentes"],
+      ["Ventas registradas", summary.total_sales, "Cobros vigentes"],
+      ["Total ventas", `Bs. ${formatCurrency(summary.total_sales_amount)}`, "Ingresos vigentes"],
     ];
   }, [summary]);
 
@@ -71,34 +53,38 @@ function Reports() {
 
   return (
     <section>
-      <div className="d-flex flex-column flex-lg-row gap-3 justify-content-between align-items-lg-center mb-4">
-        <div>
-          <h2 className="h4 mb-1">Reportes operativos</h2>
-          <p className="text-secondary mb-0">
-            Resumen general de servicios, compras, ventas y huéspedes.
-          </p>
+      <div className="page-title-block p-4 mb-4">
+        <div className="d-flex flex-column flex-lg-row gap-3 justify-content-between align-items-lg-center">
+          <div>
+            <p className="section-eyebrow mb-2">Vista gerencial</p>
+            <h2 className="h4 mb-2">Reportes operativos</h2>
+            <p className="text-secondary mb-0">
+              Resumen de servicios, huéspedes, compras y cobros vigentes.
+            </p>
+          </div>
+          <button className="btn btn-outline-primary" onClick={loadSummary} type="button">
+            Actualizar
+          </button>
         </div>
-        <button className="btn btn-outline-primary" onClick={loadSummary} type="button">
-          Actualizar
-        </button>
       </div>
 
       {error ? <div className="alert alert-danger">{error}</div> : null}
 
       {loading ? (
         <div className="alert alert-light border text-secondary">
-          Cargando reportes...
+          Cargando reportes operativos...
         </div>
       ) : null}
 
       {!loading && summary ? (
         <>
           <div className="row g-3 mb-4">
-            {cards.map((card) => (
-              <div className="col-md-6 col-xl-4" key={card.label}>
-                <div className="bg-white border rounded-2 p-3 h-100">
-                  <p className="small text-secondary mb-1">{card.label}</p>
-                  <p className="h4 mb-0">{card.value}</p>
+            {cards.map(([label, value, detail]) => (
+              <div className="col-md-6 col-xl-4" key={label}>
+                <div className="summary-card bg-white border rounded-2 p-4 h-100">
+                  <p className="small text-secondary mb-1">{label}</p>
+                  <p className="display-6 fw-bold mb-1">{value}</p>
+                  <p className="small text-secondary mb-0">{detail}</p>
                 </div>
               </div>
             ))}
@@ -106,12 +92,16 @@ function Reports() {
 
           <div className="row g-4">
             <div className="col-xl-6">
-              <div className="bg-white border rounded-2">
-                <div className="p-3 border-bottom">
-                  <h3 className="h5 mb-0">Últimas ventas</h3>
+              <div className="content-card bg-white border rounded-2">
+                <div className="p-3 border-bottom d-flex align-items-center justify-content-between">
+                  <div>
+                    <p className="section-eyebrow mb-1">Ingresos</p>
+                    <h3 className="h5 mb-0">Últimas ventas</h3>
+                  </div>
+                  <span className="badge text-bg-primary">{summary.recent_sales.length}</span>
                 </div>
                 <div className="table-responsive">
-                  <table className="table align-middle mb-0">
+                  <table className="table table-hover align-middle mb-0">
                     <thead>
                       <tr>
                         <th>Cliente</th>
@@ -124,26 +114,20 @@ function Reports() {
                     <tbody>
                       {summary.recent_sales.length === 0 ? (
                         <tr>
-                          <td className="text-secondary" colSpan="5">
-                            No hay ventas registradas.
+                          <td className="text-secondary py-4" colSpan="5">
+                            Todavía no hay ventas registradas para mostrar.
                           </td>
                         </tr>
                       ) : null}
 
                       {summary.recent_sales.map((sale) => (
                         <tr key={sale.id}>
-                          <td>{sale.customer_name}</td>
+                          <td className="fw-semibold">{sale.customer_name}</td>
                           <td>{toInputDate(sale.sale_date)}</td>
                           <td>{sale.payment_method}</td>
                           <td>Bs. {formatCurrency(sale.total_amount)}</td>
                           <td>
-                            <span
-                              className={`badge ${
-                                sale.status === "anulada"
-                                  ? "text-bg-secondary"
-                                  : "text-bg-success"
-                              }`}
-                            >
+                            <span className={`badge ${sale.status === "anulada" ? "text-bg-secondary" : "text-bg-success"}`}>
                               {sale.status === "anulada" ? "Anulada" : "Vigente"}
                             </span>
                           </td>
@@ -156,12 +140,16 @@ function Reports() {
             </div>
 
             <div className="col-xl-6">
-              <div className="bg-white border rounded-2">
-                <div className="p-3 border-bottom">
-                  <h3 className="h5 mb-0">Últimas compras</h3>
+              <div className="content-card bg-white border rounded-2">
+                <div className="p-3 border-bottom d-flex align-items-center justify-content-between">
+                  <div>
+                    <p className="section-eyebrow mb-1">Abastecimiento</p>
+                    <h3 className="h5 mb-0">Últimas compras</h3>
+                  </div>
+                  <span className="badge text-bg-primary">{summary.recent_purchases.length}</span>
                 </div>
                 <div className="table-responsive">
-                  <table className="table align-middle mb-0">
+                  <table className="table table-hover align-middle mb-0">
                     <thead>
                       <tr>
                         <th>Proveedor</th>
@@ -173,25 +161,19 @@ function Reports() {
                     <tbody>
                       {summary.recent_purchases.length === 0 ? (
                         <tr>
-                          <td className="text-secondary" colSpan="4">
-                            No hay compras registradas.
+                          <td className="text-secondary py-4" colSpan="4">
+                            Todavía no hay compras registradas para mostrar.
                           </td>
                         </tr>
                       ) : null}
 
                       {summary.recent_purchases.map((purchase) => (
                         <tr key={purchase.id}>
-                          <td>{purchase.supplier_name}</td>
+                          <td className="fw-semibold">{purchase.supplier_name}</td>
                           <td>{toInputDate(purchase.purchase_date)}</td>
                           <td>Bs. {formatCurrency(purchase.total_amount)}</td>
                           <td>
-                            <span
-                              className={`badge ${
-                                purchase.is_cancelled
-                                  ? "text-bg-secondary"
-                                  : "text-bg-success"
-                              }`}
-                            >
+                            <span className={`badge ${purchase.is_cancelled ? "text-bg-secondary" : "text-bg-success"}`}>
                               {purchase.is_cancelled ? "Anulada" : "Vigente"}
                             </span>
                           </td>

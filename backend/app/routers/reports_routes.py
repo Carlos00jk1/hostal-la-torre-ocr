@@ -20,14 +20,21 @@ def get_report_summary(
     total_services_active = (
         db.query(ProductService).filter(ProductService.is_active.is_(True)).count()
     )
-    total_purchases = db.query(Purchase).count()
+    active_purchases_query = db.query(Purchase).filter(Purchase.is_cancelled.is_(False))
+    active_sales_query = db.query(Sale).filter(Sale.status != "anulada")
+
+    total_purchases = active_purchases_query.count()
     total_purchase_amount = (
-        db.query(func.coalesce(func.sum(Purchase.total_amount), 0)).scalar()
+        active_purchases_query.with_entities(
+            func.coalesce(func.sum(Purchase.total_amount), 0)
+        ).scalar()
         or Decimal("0")
     )
-    total_sales = db.query(Sale).count()
+    total_sales = active_sales_query.count()
     total_sales_amount = (
-        db.query(func.coalesce(func.sum(Sale.total_amount), 0)).scalar()
+        active_sales_query.with_entities(
+            func.coalesce(func.sum(Sale.total_amount), 0)
+        ).scalar()
         or Decimal("0")
     )
     total_guests_active = db.query(Guest).filter(Guest.is_active.is_(True)).count()

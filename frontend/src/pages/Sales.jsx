@@ -223,10 +223,9 @@ function Sales({ user }) {
     <section>
       <div className="d-flex flex-column flex-lg-row gap-3 justify-content-between align-items-lg-center mb-4">
         <div>
-          <h2 className="h4 mb-1">Ventas de hospedaje y servicios</h2>
+          <h2 className="h4 mb-1">Cobros / Ventas</h2>
           <p className="text-secondary mb-0">
-            Registra cobros por hospedaje, desayunos, lavanderia, bebidas y
-            otros servicios del hostal.
+            Registra ingresos por hospedaje, servicios y consumos del hostal.
           </p>
         </div>
         <span className="badge text-bg-primary align-self-start">

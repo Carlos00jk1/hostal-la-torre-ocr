@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { getCurrentUser, login, setToken } from "../api/api.js";
 
@@ -32,10 +32,9 @@ function Login({ onLogin }) {
     <section className="login-page">
       <form className="login-card" onSubmit={handleSubmit}>
         <div className="text-center mb-4">
-          <span className="brand-mark mx-auto mb-3">LT</span>
+          <p className="login-brand mb-2">Hostal La Torre</p>
           <p className="section-eyebrow mb-2">Acceso administrativo</p>
-          <h1 className="h3 mb-1">Hostal La Torre</h1>
-          <p className="text-secondary mb-0">Sistema de gestión web con OCR</p>
+          <h1 className="h4 mb-0">Gestión hotelera con OCR</h1>
         </div>
 
         <div className="mb-3">
@@ -69,6 +68,12 @@ function Login({ onLogin }) {
         <button className="btn btn-primary w-100" disabled={loading} type="submit">
           {loading ? "Ingresando..." : "Ingresar"}
         </button>
+
+        <div className="text-center mt-3">
+          <Link className="login-home-link" to="/">
+            Volver al inicio
+          </Link>
+        </div>
       </form>
     </section>
   );

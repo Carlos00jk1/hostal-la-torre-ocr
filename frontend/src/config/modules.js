@@ -19,8 +19,8 @@ const modules = [
   },
   {
     path: "/services",
-    label: "Servicios del hostal",
-    description: "Administración de servicios ofrecidos a huéspedes.",
+    label: "Servicios y consumos",
+    description: "Conceptos cobrables del hostal: hospedaje, servicios y consumos.",
     roles: ["Administrador", "Recepcionista"],
   },
   {
@@ -31,14 +31,14 @@ const modules = [
   },
   {
     path: "/sales",
-    label: "Ventas",
-    description: "Ventas de hospedaje y servicios complementarios.",
+    label: "Cobros / Ventas",
+    description: "Ingresos por hospedaje, servicios y consumos del hostal.",
     roles: ["Administrador", "Recepcionista"],
   },
   {
     path: "/reports",
-    label: "Reportes",
-    description: "Reportes administrativos y consultas operativas.",
+    label: "Reportes operativos",
+    description: "Indicadores administrativos y consultas operativas.",
     roles: ["Administrador", "Consulta"],
   },
 ];

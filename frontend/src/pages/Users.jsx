@@ -262,7 +262,9 @@ function Users() {
                     ? users.map((user) => (
                         <tr key={user.id}>
                           <td className="fw-semibold">{user.username}</td>
-                          <td>{user.role.name}</td>
+                          <td>
+                            <span className="badge badge-role">{user.role.name}</span>
+                          </td>
                           <td>
                             <span
                               className={`badge ${

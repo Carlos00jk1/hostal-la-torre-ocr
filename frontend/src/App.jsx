@@ -16,14 +16,19 @@ import Services from "./pages/Services.jsx";
 import Users from "./pages/Users.jsx";
 
 const links = [
-  { to: "/", label: "Inicio" },
-  { to: "/login", label: "Login" },
+  { href: "/#inicio", label: "Inicio" },
+  { href: "/#alojamiento", label: "Alojamiento" },
+  { href: "/#atencion", label: "Atención" },
+  { href: "/#sistema", label: "Sistema" },
+  { href: "/#ubicacion", label: "Ubicación" },
 ];
 
 function App() {
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
   const location = useLocation();
+  const isHomeRoute = location.pathname === "/";
+  const isLoginRoute = location.pathname === "/login";
   const isAdminRoute = [
     "/dashboard",
     "/users",
@@ -68,25 +73,52 @@ function App() {
 
   return (
     <div className="app-shell min-vh-100">
-      {!isAdminRoute ? (
-        <nav className="navbar navbar-expand-lg public-navbar sticky-top">
+      {!isAdminRoute && !isLoginRoute ? (
+        <nav className="navbar navbar-expand-lg public-navbar">
           <div className="container">
-            <Link className="navbar-brand fw-semibold d-flex align-items-center gap-2" to="/">
-              <span className="brand-mark">LT</span>
-              <span>Hostal La Torre</span>
+            <Link className="navbar-brand public-brand fw-semibold" to="/">
+              Hostal La Torre
             </Link>
-            <div className="navbar-nav flex-row flex-wrap gap-2">
-              {links.map((link) => (
-                <Link className="nav-link px-3 fw-medium" key={link.to} to={link.to}>
-                  {link.label}
+            <button
+              className="navbar-toggler public-toggler"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#publicNav"
+              aria-controls="publicNav"
+              aria-expanded="false"
+              aria-label="Abrir menú"
+            >
+              <span className="toggler-bar" />
+              <span className="toggler-bar" />
+              <span className="toggler-bar" />
+            </button>
+            <div className="collapse navbar-collapse" id="publicNav">
+              <div className="navbar-nav ms-lg-auto align-items-lg-center gap-lg-1">
+                {links.map((link) => (
+                  <a className="nav-link px-2 px-lg-3 fw-medium" href={link.href} key={link.href}>
+                    {link.label}
+                  </a>
+                ))}
+                <Link className="btn btn-sm btn-nav-ingresar px-4 ms-lg-2 mt-2 mt-lg-0" to="/login">
+                  Ingresar
                 </Link>
-              ))}
+              </div>
             </div>
           </div>
         </nav>
       ) : null}
 
-      <main className={isAdminRoute ? "" : "container py-4"}>
+      <main
+        className={
+          isAdminRoute
+            ? ""
+            : isLoginRoute
+              ? "login-main"
+              : isHomeRoute
+                ? "public-home"
+                : "container py-4"
+        }
+      >
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login onLogin={setUser} />} />

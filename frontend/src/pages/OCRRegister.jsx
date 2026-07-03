@@ -237,22 +237,27 @@ function OCRRegister({ user }) {
 
       <div className="row g-4">
         <div className="col-xl-5">
-          <div className="bg-white border rounded-2 p-4">
-            <h3 className="h5 mb-3">Paso 1: Cargar imágenes del documento</h3>
+          <div className="ocr-step-card bg-white border rounded-2 p-4">
+            <h3 className="h5 mb-3">1. Cargar imágenes</h3>
 
-            <div className="mb-3">
-              <label className="form-label" htmlFor="ocr_files">
-                Imágenes del documento
-              </label>
+            <div className="ocr-file-picker mb-3">
               <input
                 accept="image/*"
-                className="form-control"
+                className="visually-hidden"
                 disabled={!canWrite}
                 id="ocr_files"
                 multiple
                 onChange={handleFileChange}
                 type="file"
               />
+              <label className="btn btn-primary mb-2" htmlFor="ocr_files">
+                Seleccionar imágenes
+              </label>
+              <p className="small text-secondary mb-0">
+                {selectedImages.length > 0
+                  ? `${selectedImages.length} imagen${selectedImages.length === 1 ? "" : "es"} seleccionada${selectedImages.length === 1 ? "" : "s"}`
+                  : "Sin imágenes seleccionadas"}
+              </p>
             </div>
 
             {selectedImages.length > 0 ? (
@@ -284,7 +289,7 @@ function OCRRegister({ user }) {
               </div>
             )}
 
-            <h3 className="h5 mb-3">Paso 2: Extraer texto con OCR</h3>
+            <h3 className="h5 mb-3">2. Extraer texto</h3>
             <button
               className="btn btn-primary"
               disabled={!canWrite || selectedImages.length === 0 || extracting}
@@ -296,7 +301,7 @@ function OCRRegister({ user }) {
           </div>
 
           {ocrResult ? (
-            <div className="bg-white border rounded-2 p-4 mt-4">
+            <div className="ocr-step-card bg-white border rounded-2 p-4 mt-4">
               <h3 className="h5 mb-3">Texto extraído</h3>
               <div className="mb-3">
                 <p className="mb-1">
@@ -357,8 +362,8 @@ function OCRRegister({ user }) {
         </div>
 
         <div className="col-xl-7">
-          <form className="bg-white border rounded-2 p-4" onSubmit={handleSaveGuest}>
-            <h3 className="h5 mb-3">Paso 3: Revisar/corregir datos detectados</h3>
+          <form className="ocr-step-card bg-white border rounded-2 p-4" onSubmit={handleSaveGuest}>
+            <h3 className="h5 mb-3">3. Revisar datos</h3>
 
             <div className="mb-3">
               <label className="form-label" htmlFor="full_name">
@@ -507,7 +512,7 @@ function OCRRegister({ user }) {
               />
             </div>
 
-            <h3 className="h5 mb-3">Paso 4: Guardar huésped</h3>
+            <h3 className="h5 mb-3">4. Guardar huésped</h3>
             <button className="btn btn-primary" disabled={!canWrite || saving} type="submit">
               {saving ? "Guardando..." : "Guardar huésped"}
             </button>

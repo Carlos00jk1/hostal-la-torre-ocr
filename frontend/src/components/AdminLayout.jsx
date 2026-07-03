@@ -10,21 +10,24 @@ function AdminLayout({ children, onLogout, user }) {
     <div className="admin-shell row g-0">
       <aside className="admin-sidebar col-12 col-lg-3 col-xl-2 min-vh-100">
         <div className="p-3 border-bottom border-light border-opacity-10">
-          <div className="d-flex align-items-center gap-2">
-            <span className="brand-mark bg-gold-soft text-dark">LT</span>
-            <div>
-              <h2 className="h6 mb-1">Hostal La Torre</h2>
-              <p className="small mb-0 text-white-50">Panel administrativo</p>
-            </div>
-          </div>
+          <h2 className="admin-brand mb-1">Hostal La Torre</h2>
+          <p className="small mb-0 text-white-50">Gestión hotelera OCR</p>
         </div>
 
         <nav className="nav flex-column gap-1 p-3">
           <NavLink className="nav-link rounded" to="/dashboard">
-            Dashboard
+            <span className="nav-marker" aria-hidden="true" />
+            Panel
           </NavLink>
           {visibleModules.map((module) => (
-            <NavLink className="nav-link rounded" key={module.path} to={module.path}>
+            <NavLink
+              className={`nav-link rounded ${
+                module.path === "/ocr-register" ? "nav-link-ocr" : ""
+              }`}
+              key={module.path}
+              to={module.path}
+            >
+              <span className="nav-marker" aria-hidden="true" />
               {module.label}
             </NavLink>
           ))}
@@ -35,19 +38,21 @@ function AdminLayout({ children, onLogout, user }) {
         <header className="admin-header">
           <div className="container-fluid py-3 px-4 d-flex flex-column flex-md-row gap-3 align-items-md-center justify-content-between">
             <div>
-              <p className="section-eyebrow mb-1">
-                Sistema de gestión web con OCR
-              </p>
-              <h1 className="h4 mb-0">Menú principal administrativo</h1>
+              <p className="section-eyebrow mb-1">HOSTAL LA TORRE</p>
+              <h1 className="h4 mb-0">Panel de administración hotelera</h1>
             </div>
 
-            <div className="d-flex align-items-center gap-3">
-              <div className="text-md-end bg-light border rounded-2 px-3 py-2">
-                <p className="mb-0 fw-semibold">{user?.username}</p>
-                <p className="small text-secondary mb-0">{roleName}</p>
+            <div className="session-strip">
+              <div className="session-user">
+                <span className="session-label">usuario</span>
+                <strong>{user?.username}</strong>
               </div>
-              <button className="btn btn-outline-secondary btn-sm" onClick={onLogout}>
-                Cerrar sesión
+              <div className="session-user">
+                <span className="session-label">rol</span>
+                <strong>{roleName}</strong>
+              </div>
+              <button className="btn btn-outline-secondary btn-sm btn-logout" onClick={onLogout}>
+                Salir
               </button>
             </div>
           </div>
