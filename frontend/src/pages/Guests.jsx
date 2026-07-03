@@ -142,11 +142,14 @@ function Guests({ user }) {
   }
 
   async function handleDeactivate(guestId) {
+    if (!window.confirm("¿Confirma que desea desactivar este huesped? No aparecera en listados activos.")) {
+      return;
+    }
     setMessage("");
     setError("");
     try {
       await deactivateGuest(guestId);
-      setMessage("Huésped desactivado correctamente.");
+      setMessage("Huesped desactivado correctamente.");
       await loadGuests();
     } catch (err) {
       setError(err.message);

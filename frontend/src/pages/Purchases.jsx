@@ -163,6 +163,9 @@ function Purchases({ user }) {
   }
 
   async function handleCancel(purchaseId) {
+    if (!window.confirm("¿Confirma que desea anular esta compra? Esta accion no se puede deshacer.")) {
+      return;
+    }
     setMessage("");
     setError("");
     try {
@@ -391,7 +394,7 @@ function Purchases({ user }) {
                           <td>
                             <div className="d-flex flex-wrap gap-2">
                               <button
-                                className="btn btn-sm btn-outline-secondary"
+                                className="al-btn-sm al-btn-outline"
                                 onClick={() => setSelectedPurchase(purchase)}
                                 type="button"
                               >

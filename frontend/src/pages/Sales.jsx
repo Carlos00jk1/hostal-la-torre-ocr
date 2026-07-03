@@ -208,6 +208,9 @@ function Sales({ user }) {
   }
 
   async function handleCancel(saleId) {
+    if (!window.confirm("¿Confirma que desea anular esta venta? Esta accion no se puede deshacer.")) {
+      return;
+    }
     setMessage("");
     setError("");
     try {
@@ -477,7 +480,7 @@ function Sales({ user }) {
                           <td>
                             <div className="d-flex flex-wrap gap-2">
                               <button
-                                className="btn btn-sm btn-outline-secondary"
+                                className="al-btn-sm al-btn-outline"
                                 onClick={() => setSelectedSale(sale)}
                                 type="button"
                               >

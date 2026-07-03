@@ -112,6 +112,9 @@ function Users() {
   }
 
   async function handleDeactivate(userId) {
+    if (!window.confirm("¿Confirma que desea desactivar este usuario? No podra iniciar sesion hasta que sea reactivado.")) {
+      return;
+    }
     setMessage("");
     setError("");
     try {

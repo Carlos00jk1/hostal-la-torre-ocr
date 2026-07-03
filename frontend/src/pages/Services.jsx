@@ -122,6 +122,9 @@ function Services({ user }) {
   }
 
   async function handleDeactivate(serviceId) {
+    if (!window.confirm("¿Confirma que desea desactivar este servicio? No podra usarse en nuevos cobros.")) {
+      return;
+    }
     setMessage("");
     setError("");
     try {
