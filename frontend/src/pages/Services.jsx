@@ -203,127 +203,131 @@ function Services({ user }) {
 
       <div className="row g-4">
         {isAdmin && showForm ? (
-          <div className="col-12">
-            <form className="al-card p-4" onSubmit={handleSubmit}>
-              <h3 className="h5 mb-3">
-                {editingId ? "Editar servicio" : "Nuevo servicio"}
-              </h3>
+          <>
+            <div className="modal-backdrop fade show" style={{ zIndex: 1040 }}></div>
+            <div className="modal fade show d-block" tabIndex="-1" style={{ zIndex: 1050 }}>
+              <div className="modal-dialog modal-dialog-centered">
+                <div className="modal-content border-0 shadow">
+                  <div className="modal-header">
+                    <h5 className="modal-title fw-bold">
+                      {editingId ? "Editar servicio" : "Nuevo servicio"}
+                    </h5>
+                    <button type="button" className="btn-close" onClick={resetForm}></button>
+                  </div>
+                  <form onSubmit={handleSubmit}>
+                    <div className="modal-body p-4">
+                      <p className="al-form-section-title">Datos del servicio</p>
 
-              <p className="al-form-section-title">Datos del servicio</p>
+                      <div className="mb-3">
+                        <label className="form-label" htmlFor="name">
+                          Nombre
+                        </label>
+                        <input
+                          className="al-input"
+                          id="name"
+                          name="name"
+                          onChange={handleChange}
+                          required
+                          type="text"
+                          value={form.name}
+                        />
+                      </div>
 
-              <div className="mb-3">
-                <label className="form-label" htmlFor="name">
-                  Nombre
-                </label>
-                <input
-                  className="al-input"
-                  id="name"
-                  name="name"
-                  onChange={handleChange}
-                  required
-                  type="text"
-                  value={form.name}
-                />
-              </div>
+                      <div className="mb-3">
+                        <label className="form-label" htmlFor="category">
+                          Categoría
+                        </label>
+                        <select
+                          className="al-input"
+                          id="category"
+                          name="category"
+                          onChange={handleChange}
+                          value={form.category}
+                        >
+                          {categories.map((category) => (
+                            <option key={category} value={category}>
+                              {category}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
 
-              <div className="mb-3">
-                <label className="form-label" htmlFor="category">
-                  Categoría
-                </label>
-                <select
-                  className="al-input"
-                  id="category"
-                  name="category"
-                  onChange={handleChange}
-                  value={form.category}
-                >
-                  {categories.map((category) => (
-                    <option key={category} value={category}>
-                      {category}
-                    </option>
-                  ))}
-                </select>
-              </div>
+                      <p className="al-form-section-title">Precio y disponibilidad</p>
+                      <div className="row">
+                        <div className="col-md-6 mb-3">
+                          <label className="form-label" htmlFor="price">
+                            Precio
+                          </label>
+                          <input
+                            className="al-input"
+                            id="price"
+                            min="0"
+                            name="price"
+                            onChange={handleChange}
+                            required
+                            step="0.01"
+                            type="number"
+                            value={form.price}
+                          />
+                        </div>
 
-              <p className="al-form-section-title">Precio y disponibilidad</p>
-              <div className="row">
-                <div className="col-md-6 mb-3">
-                  <label className="form-label" htmlFor="price">
-                    Precio
-                  </label>
-                  <input
-                    className="al-input"
-                    id="price"
-                    min="0"
-                    name="price"
-                    onChange={handleChange}
-                    required
-                    step="0.01"
-                    type="number"
-                    value={form.price}
-                  />
+                        <div className="col-md-6 mb-3">
+                          <label className="form-label" htmlFor="stock">
+                            Stock
+                          </label>
+                          <input
+                            className="al-input"
+                            id="stock"
+                            min="0"
+                            name="stock"
+                            onChange={handleChange}
+                            type="number"
+                            value={form.stock}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="mb-3">
+                        <label className="form-label" htmlFor="description">
+                          Descripción
+                        </label>
+                        <textarea
+                          className="al-input"
+                          id="description"
+                          name="description"
+                          onChange={handleChange}
+                          rows="3"
+                          value={form.description}
+                        />
+                      </div>
+
+                      <div className="form-check form-switch mb-3">
+                        <input
+                          checked={form.is_active}
+                          className="form-check-input"
+                          id="is_active"
+                          name="is_active"
+                          onChange={handleChange}
+                          type="checkbox"
+                        />
+                        <label className="form-check-label" htmlFor="is_active">
+                          Servicio activo
+                        </label>
+                      </div>
+                    </div>
+                    <div className="modal-footer bg-light">
+                      <button className="al-btn al-btn-outline" onClick={resetForm} type="button">
+                        Cancelar
+                      </button>
+                      <button className="al-btn al-btn-primary" disabled={saving} type="submit">
+                        {saving ? "Guardando..." : "Guardar"}
+                      </button>
+                    </div>
+                  </form>
                 </div>
-
-                <div className="col-md-6 mb-3">
-                  <label className="form-label" htmlFor="stock">
-                    Stock
-                  </label>
-                  <input
-                    className="al-input"
-                    id="stock"
-                    min="0"
-                    name="stock"
-                    onChange={handleChange}
-                    type="number"
-                    value={form.stock}
-                  />
-                </div>
               </div>
-
-              <div className="mb-3">
-                <label className="form-label" htmlFor="description">
-                  Descripción
-                </label>
-                <textarea
-                  className="al-input"
-                  id="description"
-                  name="description"
-                  onChange={handleChange}
-                  rows="3"
-                  value={form.description}
-                />
-              </div>
-
-              <div className="form-check form-switch mb-3">
-                <input
-                  checked={form.is_active}
-                  className="form-check-input"
-                  id="is_active"
-                  name="is_active"
-                  onChange={handleChange}
-                  type="checkbox"
-                />
-                <label className="form-check-label" htmlFor="is_active">
-                  Servicio activo
-                </label>
-              </div>
-
-              <div className="d-flex gap-2">
-                <button className="al-btn al-btn-primary" disabled={saving} type="submit">
-                  {saving ? "Guardando..." : "Guardar"}
-                </button>
-                {editingId ? (
-                  <button
-                    className="al-btn al-btn-outline"
-                    onClick={resetForm}
-                    type="button"
-                  >
-                    Cancelar
-                  </button>
-                ) : null}
-              </div>
-            </form>
-          </div>
+            </div>
+          </>
         ) : null}
 
         <div className="col-12">

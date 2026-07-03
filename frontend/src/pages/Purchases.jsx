@@ -231,154 +231,162 @@ function Purchases({ user }) {
 
       <div className="row g-4">
         {isAdmin && showForm ? (
-          <div className="col-12">
-            <form className="al-card p-4" onSubmit={handleSubmit}>
-              <h3 className="h5 mb-3">
-                {editingId ? "Editar compra" : "Nueva compra"}
-              </h3>
-
-              <p className="al-form-section-title">Datos de la compra</p>
-
-              <div className="row">
-                <div className="col-md-7 mb-3">
-                  <label className="form-label" htmlFor="supplier_name">
-                    Proveedor
-                  </label>
-                  <input
-                    className="al-input"
-                    id="supplier_name"
-                    name="supplier_name"
-                    onChange={handleFieldChange}
-                    required
-                    type="text"
-                    value={form.supplier_name}
-                  />
-                </div>
-                <div className="col-md-5 mb-3">
-                  <label className="form-label" htmlFor="purchase_date">
-                    Fecha
-                  </label>
-                  <input
-                    className="al-input"
-                    id="purchase_date"
-                    name="purchase_date"
-                    onChange={handleFieldChange}
-                    required
-                    type="date"
-                    value={form.purchase_date}
-                  />
-                </div>
-              </div>
-
-              <div className="mb-3">
-                <label className="form-label" htmlFor="notes">
-                  Notas
-                </label>
-                <textarea
-                  className="al-input"
-                  id="notes"
-                  name="notes"
-                  onChange={handleFieldChange}
-                  rows="2"
-                  value={form.notes}
-                />
-              </div>
-
-              <p className="al-form-section-title">Items de la compra</p>
-              <div className="d-flex justify-content-between align-items-center mb-2">
-                <span className="small fw-semibold" style={{color: "#5c4e48"}}>Detalle de insumos</span>
-                <button className="al-btn-sm al-btn-outline-primary" onClick={addDetail} type="button">
-                  Agregar detalle
-                </button>
-              </div>
-
-              {form.details.map((detail, index) => (
-                <div className="border rounded-2 p-3 mb-3" key={index}>
-                  <div className="mb-2">
-                    <label className="form-label" htmlFor={`item_name_${index}`}>
-                      Insumo
-                    </label>
-                    <input
-                      className="al-input"
-                      id={`item_name_${index}`}
-                      onChange={(event) =>
-                        handleDetailChange(index, "item_name", event.target.value)
-                      }
-                      required
-                      type="text"
-                      value={detail.item_name}
-                    />
+          <>
+            <div className="modal-backdrop fade show" style={{ zIndex: 1040 }}></div>
+            <div className="modal fade show d-block" tabIndex="-1" style={{ zIndex: 1050 }}>
+              <div className="modal-dialog modal-dialog-centered modal-xl">
+                <div className="modal-content border-0 shadow">
+                  <div className="modal-header">
+                    <h5 className="modal-title fw-bold">
+                      {editingId ? "Editar compra" : "Nueva compra"}
+                    </h5>
+                    <button type="button" className="btn-close" onClick={resetForm}></button>
                   </div>
-                  <div className="row align-items-end">
-                    <div className="col-md-4 mb-2">
-                      <label className="form-label" htmlFor={`quantity_${index}`}>
-                        Cantidad
-                      </label>
-                      <input
-                        className="al-input"
-                        id={`quantity_${index}`}
-                        min="0.01"
-                        onChange={(event) =>
-                          handleDetailChange(index, "quantity", event.target.value)
-                        }
-                        required
-                        step="0.01"
-                        type="number"
-                        value={detail.quantity}
-                      />
+                  <form onSubmit={handleSubmit}>
+                    <div className="modal-body p-4">
+                      <p className="al-form-section-title">Datos de la compra</p>
+
+                      <div className="row">
+                        <div className="col-md-7 mb-3">
+                          <label className="form-label" htmlFor="supplier_name">
+                            Proveedor
+                          </label>
+                          <input
+                            className="al-input"
+                            id="supplier_name"
+                            name="supplier_name"
+                            onChange={handleFieldChange}
+                            required
+                            type="text"
+                            value={form.supplier_name}
+                          />
+                        </div>
+                        <div className="col-md-5 mb-3">
+                          <label className="form-label" htmlFor="purchase_date">
+                            Fecha
+                          </label>
+                          <input
+                            className="al-input"
+                            id="purchase_date"
+                            name="purchase_date"
+                            onChange={handleFieldChange}
+                            required
+                            type="date"
+                            value={form.purchase_date}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="mb-3">
+                        <label className="form-label" htmlFor="notes">
+                          Notas
+                        </label>
+                        <textarea
+                          className="al-input"
+                          id="notes"
+                          name="notes"
+                          onChange={handleFieldChange}
+                          rows="2"
+                          value={form.notes}
+                        />
+                      </div>
+
+                      <p className="al-form-section-title">Items de la compra</p>
+                      <div className="d-flex justify-content-between align-items-center mb-2">
+                        <span className="small fw-semibold" style={{color: "#5c4e48"}}>Detalle de insumos</span>
+                        <button className="al-btn-sm al-btn-outline-primary" onClick={addDetail} type="button">
+                          Agregar detalle
+                        </button>
+                      </div>
+
+                      {form.details.map((detail, index) => (
+                        <div className="border rounded-2 p-3 mb-3" key={index}>
+                          <div className="mb-2">
+                            <label className="form-label" htmlFor={`item_name_${index}`}>
+                              Insumo
+                            </label>
+                            <input
+                              className="al-input"
+                              id={`item_name_${index}`}
+                              onChange={(event) =>
+                                handleDetailChange(index, "item_name", event.target.value)
+                              }
+                              required
+                              type="text"
+                              value={detail.item_name}
+                            />
+                          </div>
+                          <div className="row align-items-end">
+                            <div className="col-md-4 mb-2">
+                              <label className="form-label" htmlFor={`quantity_${index}`}>
+                                Cantidad
+                              </label>
+                              <input
+                                className="al-input"
+                                id={`quantity_${index}`}
+                                min="0.01"
+                                onChange={(event) =>
+                                  handleDetailChange(index, "quantity", event.target.value)
+                                }
+                                required
+                                step="0.01"
+                                type="number"
+                                value={detail.quantity}
+                              />
+                            </div>
+                            <div className="col-md-4 mb-2">
+                              <label className="form-label" htmlFor={`unit_price_${index}`}>
+                                Precio unitario
+                              </label>
+                              <input
+                                className="al-input"
+                                id={`unit_price_${index}`}
+                                min="0"
+                                onChange={(event) =>
+                                  handleDetailChange(index, "unit_price", event.target.value)
+                                }
+                                required
+                                step="0.01"
+                                type="number"
+                                value={detail.unit_price}
+                              />
+                            </div>
+                            <div className="col-md-4 mb-2">
+                              <p className="small text-secondary mb-1">Subtotal</p>
+                              <p className="fw-semibold mb-0">
+                                Bs. {formatCurrency(getDetailSubtotal(detail))}
+                              </p>
+                            </div>
+                          </div>
+                          <button
+                            className="al-btn-sm al-btn-outline-danger"
+                            disabled={form.details.length === 1}
+                            onClick={() => removeDetail(index)}
+                            type="button"
+                          >
+                            Quitar
+                          </button>
+                        </div>
+                      ))}
+
+                      <div className="al-total-card mb-3">
+                        <span className="al-total-card-label">Total calculado</span>
+                        <span className="al-total-card-value">Bs. {formatCurrency(formTotal)}</span>
+                      </div>
                     </div>
-                    <div className="col-md-4 mb-2">
-                      <label className="form-label" htmlFor={`unit_price_${index}`}>
-                        Precio unitario
-                      </label>
-                      <input
-                        className="al-input"
-                        id={`unit_price_${index}`}
-                        min="0"
-                        onChange={(event) =>
-                          handleDetailChange(index, "unit_price", event.target.value)
-                        }
-                        required
-                        step="0.01"
-                        type="number"
-                        value={detail.unit_price}
-                      />
+                    <div className="modal-footer bg-light">
+                      <button className="al-btn al-btn-outline" onClick={resetForm} type="button">
+                        Cancelar
+                      </button>
+                      <button className="al-btn al-btn-primary" disabled={saving} type="submit">
+                        {saving ? "Guardando..." : "Guardar compra"}
+                      </button>
                     </div>
-                    <div className="col-md-4 mb-2">
-                      <p className="small text-secondary mb-1">Subtotal</p>
-                      <p className="fw-semibold mb-0">
-                        Bs. {formatCurrency(getDetailSubtotal(detail))}
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    className="al-btn-sm al-btn-outline-danger"
-                    disabled={form.details.length === 1}
-                    onClick={() => removeDetail(index)}
-                    type="button"
-                  >
-                    Quitar
-                  </button>
+                  </form>
                 </div>
-              ))}
-
-              <div className="al-total-card mb-3">
-                <span className="al-total-card-label">Total calculado</span>
-                <span className="al-total-card-value">Bs. {formatCurrency(formTotal)}</span>
               </div>
-
-              <div className="d-flex gap-2">
-                <button className="al-btn al-btn-primary" disabled={saving} type="submit">
-                  {saving ? "Guardando..." : "Guardar compra"}
-                </button>
-                {editingId ? (
-                  <button className="al-btn al-btn-outline" onClick={resetForm} type="button">
-                    Cancelar
-                  </button>
-                ) : null}
-              </div>
-            </form>
-          </div>
+            </div>
+          </>
         ) : null}
 
         <div className="col-12">
