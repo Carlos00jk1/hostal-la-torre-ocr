@@ -82,6 +82,12 @@ function Purchases({ user }) {
     setShowForm(false);
   }
 
+  function handleCloseModal() {
+    resetForm();
+    setMessage("");
+    setError("");
+  }
+
   function handleFieldChange(event) {
     const { name, value } = event.target;
     setForm((current) => ({ ...current, [name]: value }));
@@ -235,20 +241,20 @@ function Purchases({ user }) {
             <div className="modal-backdrop fade show" style={{ zIndex: 1040 }}></div>
             <div className="modal fade show d-block" tabIndex="-1" style={{ zIndex: 1050 }}>
               <div className="modal-dialog modal-dialog-centered modal-xl">
-                <div className="modal-content border-0 shadow">
-                  <div className="modal-header">
+                <div className="modal-content border-0 shadow-lg">
+                  <div className="modal-header border-bottom-0 pb-0">
                     <h5 className="modal-title fw-bold">
                       {editingId ? "Editar compra" : "Nueva compra"}
                     </h5>
-                    <button type="button" className="btn-close" onClick={resetForm}></button>
+                    <button type="button" className="btn-close" onClick={handleCloseModal}></button>
                   </div>
                   <form onSubmit={handleSubmit}>
-                    <div className="modal-body p-4">
+                    <div className="modal-body" style={{ maxHeight: "70vh", overflowY: "auto" }}>
                       <p className="al-form-section-title">Datos de la compra</p>
 
                       <div className="row">
                         <div className="col-md-7 mb-3">
-                          <label className="form-label" htmlFor="supplier_name">
+                          <label className="form-label fw-semibold" htmlFor="supplier_name">
                             Proveedor
                           </label>
                           <input
@@ -262,7 +268,7 @@ function Purchases({ user }) {
                           />
                         </div>
                         <div className="col-md-5 mb-3">
-                          <label className="form-label" htmlFor="purchase_date">
+                          <label className="form-label fw-semibold" htmlFor="purchase_date">
                             Fecha
                           </label>
                           <input
@@ -278,7 +284,7 @@ function Purchases({ user }) {
                       </div>
 
                       <div className="mb-3">
-                        <label className="form-label" htmlFor="notes">
+                        <label className="form-label fw-semibold" htmlFor="notes">
                           Notas
                         </label>
                         <textarea
@@ -291,34 +297,34 @@ function Purchases({ user }) {
                         />
                       </div>
 
-                      <p className="al-form-section-title">Items de la compra</p>
+                      <p className="al-form-section-title mt-4">Items de la compra</p>
                       <div className="d-flex justify-content-between align-items-center mb-2">
-                        <span className="small fw-semibold" style={{color: "#5c4e48"}}>Detalle de insumos</span>
+                        <span className="small fw-semibold text-secondary">Detalle de insumos</span>
                         <button className="al-btn-sm al-btn-outline-primary" onClick={addDetail} type="button">
                           Agregar detalle
                         </button>
                       </div>
 
                       {form.details.map((detail, index) => (
-                        <div className="border rounded-2 p-3 mb-3" key={index}>
-                          <div className="mb-2">
-                            <label className="form-label" htmlFor={`item_name_${index}`}>
-                              Insumo
-                            </label>
-                            <input
-                              className="al-input"
-                              id={`item_name_${index}`}
-                              onChange={(event) =>
-                                handleDetailChange(index, "item_name", event.target.value)
-                              }
-                              required
-                              type="text"
-                              value={detail.item_name}
-                            />
-                          </div>
-                          <div className="row align-items-end">
+                        <div className="border rounded-2 p-3 mb-3 bg-light" key={index}>
+                          <div className="row">
                             <div className="col-md-4 mb-2">
-                              <label className="form-label" htmlFor={`quantity_${index}`}>
+                              <label className="form-label fw-semibold" htmlFor={`item_name_${index}`}>
+                                Insumo
+                              </label>
+                              <input
+                                className="al-input"
+                                id={`item_name_${index}`}
+                                onChange={(event) =>
+                                  handleDetailChange(index, "item_name", event.target.value)
+                                }
+                                required
+                                type="text"
+                                value={detail.item_name}
+                              />
+                            </div>
+                            <div className="col-md-2 mb-2">
+                              <label className="form-label fw-semibold" htmlFor={`quantity_${index}`}>
                                 Cantidad
                               </label>
                               <input
@@ -334,9 +340,9 @@ function Purchases({ user }) {
                                 value={detail.quantity}
                               />
                             </div>
-                            <div className="col-md-4 mb-2">
-                              <label className="form-label" htmlFor={`unit_price_${index}`}>
-                                Precio unitario
+                            <div className="col-md-2 mb-2">
+                              <label className="form-label fw-semibold" htmlFor={`unit_price_${index}`}>
+                                Precio unit.
                               </label>
                               <input
                                 className="al-input"
@@ -351,31 +357,33 @@ function Purchases({ user }) {
                                 value={detail.unit_price}
                               />
                             </div>
-                            <div className="col-md-4 mb-2">
-                              <p className="small text-secondary mb-1">Subtotal</p>
-                              <p className="fw-semibold mb-0">
+                            <div className="col-md-2 mb-2 d-flex flex-column justify-content-end">
+                              <p className="small text-secondary mb-1 fw-semibold">Subtotal</p>
+                              <p className="fw-bold mb-2">
                                 Bs. {formatCurrency(getDetailSubtotal(detail))}
                               </p>
                             </div>
+                            <div className="col-md-2 mb-2 d-flex align-items-end justify-content-end">
+                              <button
+                                className="al-btn-sm al-btn-outline-danger w-100"
+                                disabled={form.details.length === 1}
+                                onClick={() => removeDetail(index)}
+                                type="button"
+                              >
+                                Quitar
+                              </button>
+                            </div>
                           </div>
-                          <button
-                            className="al-btn-sm al-btn-outline-danger"
-                            disabled={form.details.length === 1}
-                            onClick={() => removeDetail(index)}
-                            type="button"
-                          >
-                            Quitar
-                          </button>
                         </div>
                       ))}
 
-                      <div className="al-total-card mb-3">
+                      <div className="al-total-card mb-2 mt-3">
                         <span className="al-total-card-label">Total calculado</span>
                         <span className="al-total-card-value">Bs. {formatCurrency(formTotal)}</span>
                       </div>
                     </div>
-                    <div className="modal-footer bg-light">
-                      <button className="al-btn al-btn-outline" onClick={resetForm} type="button">
+                    <div className="modal-footer border-top-0 pt-0">
+                      <button className="al-btn al-btn-outline" onClick={handleCloseModal} type="button">
                         Cancelar
                       </button>
                       <button className="al-btn al-btn-primary" disabled={saving} type="submit">

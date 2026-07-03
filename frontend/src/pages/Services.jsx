@@ -82,6 +82,12 @@ function Services({ user }) {
     setShowForm(false);
   }
 
+  function handleCloseModal() {
+    resetForm();
+    setMessage("");
+    setError("");
+  }
+
   function startEdit(service) {
     setEditingId(service.id);
     setForm({
@@ -206,56 +212,58 @@ function Services({ user }) {
           <>
             <div className="modal-backdrop fade show" style={{ zIndex: 1040 }}></div>
             <div className="modal fade show d-block" tabIndex="-1" style={{ zIndex: 1050 }}>
-              <div className="modal-dialog modal-dialog-centered">
-                <div className="modal-content border-0 shadow">
-                  <div className="modal-header">
+              <div className="modal-dialog modal-dialog-centered modal-lg">
+                <div className="modal-content border-0 shadow-lg">
+                  <div className="modal-header border-bottom-0 pb-0">
                     <h5 className="modal-title fw-bold">
                       {editingId ? "Editar servicio" : "Nuevo servicio"}
                     </h5>
-                    <button type="button" className="btn-close" onClick={resetForm}></button>
+                    <button type="button" className="btn-close" onClick={handleCloseModal}></button>
                   </div>
                   <form onSubmit={handleSubmit}>
-                    <div className="modal-body p-4">
+                    <div className="modal-body" style={{ maxHeight: "70vh", overflowY: "auto" }}>
                       <p className="al-form-section-title">Datos del servicio</p>
 
-                      <div className="mb-3">
-                        <label className="form-label" htmlFor="name">
-                          Nombre
-                        </label>
-                        <input
-                          className="al-input"
-                          id="name"
-                          name="name"
-                          onChange={handleChange}
-                          required
-                          type="text"
-                          value={form.name}
-                        />
-                      </div>
+                      <div className="row">
+                        <div className="col-md-8 mb-3">
+                          <label className="form-label fw-semibold" htmlFor="name">
+                            Nombre
+                          </label>
+                          <input
+                            className="al-input"
+                            id="name"
+                            name="name"
+                            onChange={handleChange}
+                            required
+                            type="text"
+                            value={form.name}
+                          />
+                        </div>
 
-                      <div className="mb-3">
-                        <label className="form-label" htmlFor="category">
-                          Categoría
-                        </label>
-                        <select
-                          className="al-input"
-                          id="category"
-                          name="category"
-                          onChange={handleChange}
-                          value={form.category}
-                        >
-                          {categories.map((category) => (
-                            <option key={category} value={category}>
-                              {category}
-                            </option>
-                          ))}
-                        </select>
+                        <div className="col-md-4 mb-3">
+                          <label className="form-label fw-semibold" htmlFor="category">
+                            Categoría
+                          </label>
+                          <select
+                            className="al-input"
+                            id="category"
+                            name="category"
+                            onChange={handleChange}
+                            value={form.category}
+                          >
+                            {categories.map((category) => (
+                              <option key={category} value={category}>
+                                {category}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
                       </div>
 
                       <p className="al-form-section-title">Precio y disponibilidad</p>
                       <div className="row">
                         <div className="col-md-6 mb-3">
-                          <label className="form-label" htmlFor="price">
+                          <label className="form-label fw-semibold" htmlFor="price">
                             Precio
                           </label>
                           <input
@@ -272,7 +280,7 @@ function Services({ user }) {
                         </div>
 
                         <div className="col-md-6 mb-3">
-                          <label className="form-label" htmlFor="stock">
+                          <label className="form-label fw-semibold" htmlFor="stock">
                             Stock
                           </label>
                           <input
@@ -288,7 +296,7 @@ function Services({ user }) {
                       </div>
 
                       <div className="mb-3">
-                        <label className="form-label" htmlFor="description">
+                        <label className="form-label fw-semibold" htmlFor="description">
                           Descripción
                         </label>
                         <textarea
@@ -296,7 +304,7 @@ function Services({ user }) {
                           id="description"
                           name="description"
                           onChange={handleChange}
-                          rows="3"
+                          rows="2"
                           value={form.description}
                         />
                       </div>
@@ -310,13 +318,13 @@ function Services({ user }) {
                           onChange={handleChange}
                           type="checkbox"
                         />
-                        <label className="form-check-label" htmlFor="is_active">
+                        <label className="form-check-label fw-semibold" htmlFor="is_active">
                           Servicio activo
                         </label>
                       </div>
                     </div>
-                    <div className="modal-footer bg-light">
-                      <button className="al-btn al-btn-outline" onClick={resetForm} type="button">
+                    <div className="modal-footer border-top-0 pt-0">
+                      <button className="al-btn al-btn-outline" onClick={handleCloseModal} type="button">
                         Cancelar
                       </button>
                       <button className="al-btn al-btn-primary" disabled={saving} type="submit">

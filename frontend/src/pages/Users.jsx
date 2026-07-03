@@ -64,6 +64,12 @@ function Users() {
     setShowForm(false);
   }
 
+  function handleCloseModal() {
+    resetForm();
+    setMessage("");
+    setError("");
+  }
+
   function startEdit(user) {
     setEditingId(user.id);
     setForm({
@@ -207,90 +213,91 @@ function Users() {
           <>
             <div className="modal-backdrop fade show" style={{ zIndex: 1040 }}></div>
             <div className="modal fade show d-block" tabIndex="-1" style={{ zIndex: 1050 }}>
-              <div className="modal-dialog modal-dialog-centered">
-                <div className="modal-content border-0 shadow">
-                  <div className="modal-header">
+              <div className="modal-dialog modal-dialog-centered modal-lg">
+                <div className="modal-content border-0 shadow-lg">
+                  <div className="modal-header border-bottom-0 pb-0">
                     <h5 className="modal-title fw-bold">
                       {editingId ? "Editar usuario" : "Nuevo usuario"}
                     </h5>
-                    <button type="button" className="btn-close" onClick={resetForm}></button>
+                    <button type="button" className="btn-close" onClick={handleCloseModal}></button>
                   </div>
                   <form onSubmit={handleSubmit}>
-                    <div className="modal-body p-4">
-                      <p className="al-form-section-title">Datos de acceso</p>
+                    <div className="modal-body" style={{ maxHeight: "70vh", overflowY: "auto" }}>
+                      <div className="row">
+                        <div className="col-md-6 mb-3">
+                          <label className="form-label fw-semibold" htmlFor="username">
+                            Usuario
+                          </label>
+                          <input
+                            className="al-input"
+                            id="username"
+                            name="username"
+                            onChange={handleChange}
+                            required
+                            type="text"
+                            value={form.username}
+                          />
+                        </div>
 
-                      <div className="mb-3">
-                        <label className="form-label" htmlFor="username">
-                          Usuario
-                        </label>
-                        <input
-                          className="al-input"
-                          id="username"
-                          name="username"
-                          onChange={handleChange}
-                          required
-                          type="text"
-                          value={form.username}
-                        />
-                      </div>
+                        <div className="col-md-6 mb-3">
+                          <label className="form-label fw-semibold" htmlFor="password">
+                            Contraseña
+                          </label>
+                          <input
+                            className="al-input"
+                            id="password"
+                            name="password"
+                            onChange={handleChange}
+                            required={!editingId}
+                            type="password"
+                            value={form.password}
+                          />
+                          {editingId ? (
+                            <div className="form-text small">
+                              Dejar vacío para conservar actual.
+                            </div>
+                          ) : null}
+                        </div>
 
-                      <div className="mb-3">
-                        <label className="form-label" htmlFor="password">
-                          Contraseña
-                        </label>
-                        <input
-                          className="al-input"
-                          id="password"
-                          name="password"
-                          onChange={handleChange}
-                          required={!editingId}
-                          type="password"
-                          value={form.password}
-                        />
-                        {editingId ? (
-                          <div className="form-text">
-                            Deja este campo vacío para conservar la contraseña actual.
+                        <div className="col-md-6 mb-3">
+                          <label className="form-label fw-semibold" htmlFor="role_id">
+                            Rol
+                          </label>
+                          <select
+                            className="al-input"
+                            id="role_id"
+                            name="role_id"
+                            onChange={handleChange}
+                            required
+                            value={form.role_id}
+                          >
+                            {roles.map((role) => (
+                              <option key={role.id} value={role.id}>
+                                {role.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div className="col-md-6 mb-3 d-flex align-items-center">
+                          <div className="form-check form-switch mt-4">
+                            <input
+                              checked={form.is_active}
+                              className="form-check-input"
+                              id="is_active"
+                              name="is_active"
+                              onChange={handleChange}
+                              type="checkbox"
+                            />
+                            <label className="form-check-label ms-2" htmlFor="is_active">
+                              Usuario activo
+                            </label>
                           </div>
-                        ) : null}
-                      </div>
-
-                      <p className="al-form-section-title">Rol y estado</p>
-                      <div className="mb-3">
-                        <label className="form-label" htmlFor="role_id">
-                          Rol
-                        </label>
-                        <select
-                          className="al-input"
-                          id="role_id"
-                          name="role_id"
-                          onChange={handleChange}
-                          required
-                          value={form.role_id}
-                        >
-                          {roles.map((role) => (
-                            <option key={role.id} value={role.id}>
-                              {role.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-
-                      <div className="form-check form-switch mb-3">
-                        <input
-                          checked={form.is_active}
-                          className="form-check-input"
-                          id="is_active"
-                          name="is_active"
-                          onChange={handleChange}
-                          type="checkbox"
-                        />
-                        <label className="form-check-label" htmlFor="is_active">
-                          Usuario activo
-                        </label>
+                        </div>
                       </div>
                     </div>
-                    <div className="modal-footer bg-light">
-                      <button className="al-btn al-btn-outline" onClick={resetForm} type="button">
+                    <div className="modal-footer border-top-0 pt-0">
+                      <button className="al-btn al-btn-outline" onClick={handleCloseModal} type="button">
                         Cancelar
                       </button>
                       <button className="al-btn al-btn-primary" disabled={saving} type="submit">

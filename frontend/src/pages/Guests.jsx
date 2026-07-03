@@ -112,6 +112,12 @@ function Guests({ user }) {
     setShowForm(false);
   }
 
+  function handleCloseModal() {
+    resetForm();
+    setMessage("");
+    setError("");
+  }
+
   function startEdit(guest) {
     setEditingId(guest.id);
     setForm({
@@ -250,35 +256,34 @@ function Guests({ user }) {
             <div className="modal-backdrop fade show" style={{ zIndex: 1040 }}></div>
             <div className="modal fade show d-block" tabIndex="-1" style={{ zIndex: 1050 }}>
               <div className="modal-dialog modal-dialog-centered modal-lg">
-                <div className="modal-content border-0 shadow">
-                  <div className="modal-header">
+                <div className="modal-content border-0 shadow-lg">
+                  <div className="modal-header border-bottom-0 pb-0">
                     <h5 className="modal-title fw-bold">
                       {editingId ? "Editar huésped" : "Nuevo huésped"}
                     </h5>
-                    <button type="button" className="btn-close" onClick={resetForm}></button>
+                    <button type="button" className="btn-close" onClick={handleCloseModal}></button>
                   </div>
                   <form onSubmit={handleSubmit}>
-                    <div className="modal-body p-4">
+                    <div className="modal-body" style={{ maxHeight: "70vh", overflowY: "auto" }}>
                       <p className="al-form-section-title">Identificacion</p>
 
-                      <div className="mb-3">
-                        <label className="form-label" htmlFor="full_name">
-                          Nombre completo
-                        </label>
-                        <input
-                          className="al-input"
-                          id="full_name"
-                          name="full_name"
-                          onChange={handleFieldChange}
-                          required
-                          type="text"
-                          value={form.full_name}
-                        />
-                      </div>
-
                       <div className="row">
+                        <div className="col-12 mb-3">
+                          <label className="form-label fw-semibold" htmlFor="full_name">
+                            Nombre completo
+                          </label>
+                          <input
+                            className="al-input"
+                            id="full_name"
+                            name="full_name"
+                            onChange={handleFieldChange}
+                            required
+                            type="text"
+                            value={form.full_name}
+                          />
+                        </div>
                         <div className="col-md-5 mb-3">
-                          <label className="form-label" htmlFor="document_type">
+                          <label className="form-label fw-semibold" htmlFor="document_type">
                             Tipo documento
                           </label>
                           <select
@@ -295,7 +300,7 @@ function Guests({ user }) {
                           </select>
                         </div>
                         <div className="col-md-7 mb-3">
-                          <label className="form-label" htmlFor="document_number">
+                          <label className="form-label fw-semibold" htmlFor="document_number">
                             Numero documento
                           </label>
                           <input
@@ -313,7 +318,7 @@ function Guests({ user }) {
                       <p className="al-form-section-title">Datos personales</p>
                       <div className="row">
                         <div className="col-md-6 mb-3">
-                          <label className="form-label" htmlFor="phone">
+                          <label className="form-label fw-semibold" htmlFor="phone">
                             Telefono
                           </label>
                           <input
@@ -326,7 +331,7 @@ function Guests({ user }) {
                           />
                         </div>
                         <div className="col-md-6 mb-3">
-                          <label className="form-label" htmlFor="birth_date">
+                          <label className="form-label fw-semibold" htmlFor="birth_date">
                             Fecha nacimiento
                           </label>
                           <input
@@ -344,36 +349,38 @@ function Guests({ user }) {
                       </div>
 
                       <p className="al-form-section-title">Contacto y observaciones</p>
-                      <div className="mb-3">
-                        <label className="form-label" htmlFor="email">
-                          Email
-                        </label>
-                        <input
-                          className="al-input"
-                          id="email"
-                          name="email"
-                          onChange={handleFieldChange}
-                          type="email"
-                          value={form.email}
-                        />
+                      <div className="row">
+                        <div className="col-md-6 mb-3">
+                          <label className="form-label fw-semibold" htmlFor="email">
+                            Email
+                          </label>
+                          <input
+                            className="al-input"
+                            id="email"
+                            name="email"
+                            onChange={handleFieldChange}
+                            type="email"
+                            value={form.email}
+                          />
+                        </div>
+
+                        <div className="col-md-6 mb-3">
+                          <label className="form-label fw-semibold" htmlFor="nationality">
+                            Nacionalidad
+                          </label>
+                          <input
+                            className="al-input"
+                            id="nationality"
+                            name="nationality"
+                            onChange={handleFieldChange}
+                            type="text"
+                            value={form.nationality}
+                          />
+                        </div>
                       </div>
 
                       <div className="mb-3">
-                        <label className="form-label" htmlFor="nationality">
-                          Nacionalidad
-                        </label>
-                        <input
-                          className="al-input"
-                          id="nationality"
-                          name="nationality"
-                          onChange={handleFieldChange}
-                          type="text"
-                          value={form.nationality}
-                        />
-                      </div>
-
-                      <div className="mb-3">
-                        <label className="form-label" htmlFor="address">
+                        <label className="form-label fw-semibold" htmlFor="address">
                           Dirección
                         </label>
                         <input
@@ -387,7 +394,7 @@ function Guests({ user }) {
                       </div>
 
                       <div className="mb-3">
-                        <label className="form-label" htmlFor="notes">
+                        <label className="form-label fw-semibold" htmlFor="notes">
                           Notas
                         </label>
                         <textarea
@@ -400,8 +407,8 @@ function Guests({ user }) {
                         />
                       </div>
                     </div>
-                    <div className="modal-footer bg-light">
-                      <button className="al-btn al-btn-outline" onClick={resetForm} type="button">
+                    <div className="modal-footer border-top-0 pt-0">
+                      <button className="al-btn al-btn-outline" onClick={handleCloseModal} type="button">
                         Cancelar
                       </button>
                       <button className="al-btn al-btn-primary" disabled={saving} type="submit">
